@@ -13,7 +13,7 @@ public class Course {
     private Set<Student> enrolledIn;
     private List<Student> waitlist;
     private String number;
-    private String name;
+    private String titel;
     private int limit;
 
     public Course(){
@@ -22,12 +22,12 @@ public class Course {
         limit = 16;
     }
 
-    public void setCatalogNumber(String number){
+    public void setCourseNumber(String number){
         this.number = number;
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
@@ -51,19 +51,26 @@ public class Course {
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
+    public String getCourseTitle(){
+        return title;
+    }
+    
+    public String getCourseNumber(){
+        return number;
+    }
+    public boolean enrolledIn(Student s){
         if (enrolledIn.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
+        else if (enrolledIn.size() >= limit){
+            if (!waitlist.contains(s)){
+                waitlist.add(s);
             return false;
         }
-        enrolledIn.add(s);
-        return true;
+        else{
+            enrolledIn.add(s);
+            return true;
+        }
     }
 
     public void dropStudent(Student s){
