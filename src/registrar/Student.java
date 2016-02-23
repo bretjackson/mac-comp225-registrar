@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class Student {
 
-    public String studentName; //studentName of student
+    public String studentName; //Name of student
     public Set<Course> courses; //courses the student is enrolled in? rename...there is a function also called enrolledIn
 
     /**
@@ -33,7 +33,7 @@ public class Student {
     /**
      *
      * @param c
-     * @return
+     * @return boolean value
      */
     public boolean enrolledIn(Course c){
         if(c.checkStudentEnrollStatus(this)) {
