@@ -1,7 +1,7 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
+//import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,10 +10,10 @@ import java.util.Set;
 public class Student {
 
     public String name;
-    public Set<Course> enrolledIn;
+    public Set<Course> enrolledCourses;
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        enrolledCourses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,12 +21,12 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return enrolledCourses;
     }
 
     public boolean enrollIn(Course c){
         if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+            enrolledCourses.add(c);
             return true;
         }
         else {
@@ -35,8 +35,8 @@ public class Student {
     }
 
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (enrolledCourses.contains(c)) {
+            enrolledCourses.remove(c);
         }
         c.dropStudent(this);
     }
