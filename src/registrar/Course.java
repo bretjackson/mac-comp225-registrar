@@ -13,17 +13,17 @@ public class Course {
     public String catalogNumber;
     public String title;
 
-    private Set<Student> participants; //courses have participants that are Students
+    private Set<Student> participants;
     private List<Student> waitList;
-    private int enrollmentLimit; //this is better than just 'limit'
+    private int enrollmentLimit;
 
     public Course(){
         participants = new HashSet<>();
-        waitList = new ArrayList<>(); //maybe make this a queue
+        waitList = new ArrayList<>();
         enrollmentLimit = 16;
     }
 
-    public void setCatalogNumber(String catalogNumber){  //set course number
+    public void setCatalogNumber(String catalogNumber){
         this.catalogNumber = catalogNumber;
     }
 
