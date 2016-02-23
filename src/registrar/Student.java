@@ -1,7 +1,6 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,10 +9,10 @@ import java.util.Set;
 public class Student {
 
     public String name;
-    public Set<Course> enrolledIn;
+    public Set<Course> enrolledInCourseList;
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        enrolledInCourseList = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,24 +20,26 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return enrolledInCourseList;
     }
 
-    public boolean enroll(Course c){
-        if(c.enrolledIn(this)) {
-            enrolled.add(c);
+
+
+    public boolean enrollIn(Course c){
+        if(c.enrolled(this)) {
+            enrolledInCourseList.add(c);
             System.out.println("Student is succesfully registered in course "+c.getCourseNumber()+" "+c.getCourseTitle());
             return true;
         }
-        else {
+        else{
             System.out.println("Student is in the waitlist for course "+c.getCourseNumber()+" "+c.getCourseTitle());
             return false;
         }
     }
 
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (enrolledInCourseList.contains(c)) {
+            enrolledInCourseList.remove(c);
         }
         c.dropStudent(this);
     }
