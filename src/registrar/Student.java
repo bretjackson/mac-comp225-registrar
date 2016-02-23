@@ -24,12 +24,14 @@ public class Student {
         return enrolledIn;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    public boolean enroll(Course c){
+        if(c.enrolledIn(this)) {
+            enrolled.add(c);
+            System.out.println("Student is succesfully registered in course "+c.getCourseNumber()+" "+c.getCourseTitle());
             return true;
         }
         else {
+            System.out.println("Student is in the waitlist for course "+c.getCourseNumber()+" "+c.getCourseTitle());
             return false;
         }
     }
