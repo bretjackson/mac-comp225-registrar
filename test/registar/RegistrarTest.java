@@ -49,15 +49,15 @@ public class RegistrarTest {
 
     @Test
     public void studentCanEnroll() {
-        sally.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
         assertEquals(set(comp225), sally.getCourses());
         assertEquals(set(sally), comp225.getStudents());
     }
 
     @Test
     public void doubleEnrollingHasNoEffect() {
-        sally.enrollIn(comp225);
-        sally.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
+        sally.checkCourseEnrollStatus(comp225);
         assertEquals(set(comp225), sally.getCourses());
         assertEquals(set(sally), comp225.getStudents());
     }
@@ -74,7 +74,7 @@ public class RegistrarTest {
     @Test
     public void enrollingUpToLimitAllowed() {
         factory.enrollMultipleStudents(comp225, 15);
-        assertTrue(sally.enrollIn(comp225));
+        assertTrue(sally.checkCourseEnrollStatus(comp225));
         assertEquals(list(), comp225.getWaitList());
         assertTrue(comp225.getStudents().contains(sally));
     }
@@ -82,7 +82,7 @@ public class RegistrarTest {
     @Test
     public void enrollingPastLimitPushesToWaitList() {
         factory.enrollMultipleStudents(comp225, 16);
-        assertFalse(sally.enrollIn(comp225));
+        assertFalse(sally.checkCourseEnrollStatus(comp225));
         assertEquals(list(sally), comp225.getWaitList());
         assertFalse(comp225.getStudents().contains(sally));
     }
@@ -90,17 +90,17 @@ public class RegistrarTest {
     @Test
     public void waitListPreservesEnrollmentOrder() {
         factory.enrollMultipleStudents(comp225, 16);
-        sally.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        zongo.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
+        zongo.checkCourseEnrollStatus(comp225);
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
     @Test
     public void doubleEnrollingInFullCourseHasNoEffect() {
-        sally.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
         factory.enrollMultipleStudents(comp225, 20);
-        assertTrue(sally.enrollIn(comp225)); // full now, but Sally was already enrolled
+        assertTrue(sally.checkCourseEnrollStatus(comp225)); // full now, but Sally was already enrolled
         assertTrue(comp225.getStudents().contains(sally));
         assertFalse(comp225.getWaitList().contains(sally));
     }
@@ -108,11 +108,11 @@ public class RegistrarTest {
     @Test
     public void doubleEnrollingAfterWaitListedHasNoEffect() {
         factory.enrollMultipleStudents(comp225, 16);
-        sally.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        zongo.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        assertFalse(sally.enrollIn(comp225));
+        sally.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
+        zongo.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
+        assertFalse(sally.checkCourseEnrollStatus(comp225));
 
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
@@ -120,7 +120,7 @@ public class RegistrarTest {
     @Test
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
+        fred.checkCourseEnrollStatus(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
     }
 
@@ -128,7 +128,7 @@ public class RegistrarTest {
 
     @Test
     public void studentCanDrop() {
-        sally.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
         sally.drop(comp225);
         assertEquals(set(), sally.getCourses());
         assertEquals(set(), comp225.getStudents());
@@ -136,9 +136,9 @@ public class RegistrarTest {
 
     @Test
     public void dropHasNoEffectOnOtherCoursesOrStudents() {
-        sally.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        sally.enrollIn(math6);
+        sally.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
+        sally.checkCourseEnrollStatus(math6);
         sally.drop(comp225);
         assertEquals(set(math6), sally.getCourses());
         assertEquals(set(fred), comp225.getStudents());
@@ -147,19 +147,19 @@ public class RegistrarTest {
     @Test
     public void dropRemovesFromWaitList() {
         factory.enrollMultipleStudents(comp225, 16);
-        sally.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        zongo.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
+        zongo.checkCourseEnrollStatus(comp225);
         fred.drop(comp225);
         assertEquals(list(sally, zongo), comp225.getWaitList());
     }
 
     @Test
     public void dropEnrollsWaitListedStudents() {
-        sally.enrollIn(comp225);
+        sally.checkCourseEnrollStatus(comp225);
         factory.enrollMultipleStudents(comp225, 15);
-        zongo.enrollIn(comp225);
-        fred.enrollIn(comp225);
+        zongo.checkCourseEnrollStatus(comp225);
+        fred.checkCourseEnrollStatus(comp225);
         sally.drop(comp225);
         assertTrue(comp225.getStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
