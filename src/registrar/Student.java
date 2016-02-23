@@ -1,32 +1,43 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Refactored by sduong on 2/23/2016.
+ * Students should know their registered courses.
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    public String studentName; //Name of student
+    public Set<Course> courses; //courses the student is enrolled in? rename...there is a function also called enrolledIn
 
-    public Student(){
-        enrolledIn = new HashSet<>();
+    /**
+     * constructor for Student...should probably set the studentName here in addition to remembering the set of courses
+     */
+    public Student(String s){
+        this.courses = new HashSet<>();
+        this.studentName = s;
     }
 
-    public void setName(String name){
-        this.name = name;
-    }
 
+    /**
+     * a getter method for getting the set of courses the student is enrolled in
+     * @return courses
+     */
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return courses;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    /**
+     *
+     * @param c
+     * @return boolean value
+     */
+    public boolean enrolledIn(Course c){
+        if(c.checkStudentEnrollStatus(this)) {
+            courses.add(c);
             return true;
         }
         else {
@@ -34,9 +45,13 @@ public class Student {
         }
     }
 
+    /**
+     *
+     * @param c
+     */
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (courses.contains(c)) {
+            courses.remove(c);
         }
         c.dropStudent(this);
     }

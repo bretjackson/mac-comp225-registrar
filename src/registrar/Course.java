@@ -7,36 +7,41 @@ import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Refactored by sduong on 2/23/2016.
+ * Courses can have a max enrollment limit on the number of students.
+ * The enrollment limit cannot be changed once a student registers for the course.
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
-    private List<Student> waitlist;
-    private String number;
-    private String name;
+    private Set<Student> studentsEnrolled; //set of students enrolled
+    private List<Student> waitlist; //list of students on the waitlist
+    private String courseCode;
+    private String courseName;
     private int limit;
 
-    public Course(){
-        enrolledIn = new HashSet<>();
+    /**
+     * Constructor for course, and courses should know the list of students enrolled in them.
+     */
+    public Course(String number, String title){
+        studentsEnrolled = new HashSet<>();
         waitlist = new ArrayList<>();
         limit = 16;
+        this.courseCode = number;
+        this.courseName = title;
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
-    }
 
-    public void setTitle(String title){
-        this.name = title;
-    }
-
+    /**
+     * getter method to get the enrollment limit
+     * @return limit
+     */
     public int getEnrollmentLimit(){
         return limit;
     }
 
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (studentsEnrolled.size() == 0){
             this.limit = limit;
             return true;
         }
@@ -44,40 +49,61 @@ public class Course {
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return studentsEnrolled;
     }
 
     public List<Student> getWaitList(){
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
-            return true;
-        }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
-            return false;
-        }
-        enrolledIn.add(s);
-        return true;
+
+    /**
+     * checks the enrollment status of the student in the course.
+     * @param s
+     * @return boolean value
+     */
+    public boolean checkStudentEnrollStatus(Student s) {
+
+        //check if student is in the set of studentsEnrolled
+        return studentsEnrolled.contains(s) || addStudent(s) ;
     }
 
+    public boolean addStudent(Student s){
+        //check if the number of students enrolled is equal or greater than the limit
+        if (studentsEnrolled.size() >= limit){
+            return checkWaitlist(s);
+        }
+        else{
+            studentsEnrolled.add(s); //if the student is not enrolled and there is still spots left, add the student
+            return true; //and return true
+        }
+
+    }
+
+    public boolean checkWaitlist(Student s){
+        if (waitlist.contains(s)){
+            return false; //if the student is on the waitlist, return false.
+        }
+        else{
+            waitlist.add(s); //otherwise, add student to the waitlist because limit is reached
+            return false;
+        }
+    }
+
+
     public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+        if (studentsEnrolled.contains(s)) {
+            studentsEnrolled.remove(s);
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+                studentsEnrolled.add(toEnroll);
+                toEnroll.courses.add(this);
             }
         }
         else if (waitlist.contains(s)){
             waitlist.remove(s);
         }
     }
+
 
 }
