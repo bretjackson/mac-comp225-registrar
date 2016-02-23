@@ -56,34 +56,22 @@ public class Course {
         return waitlist;
     }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
 
     /**
      * checks the enrollment status of the student in the course.
      * @param s
      * @return
      */
-    public boolean checkStudentEnrollStatus(Student s){
+    public boolean checkStudentEnrollStatus(Student s) {
 
         //check if student is in the set of studentsEnrolled
-        if (studentsEnrolled.contains(s)){
-            return true; //return true if student is in the set
-        }
+        return studentsEnrolled.contains(s) || addStudent(s) ;
+    }
+
+    public boolean addStudent(Student s){
         //check if the number of students enrolled is equal or greater than the limit
         if (studentsEnrolled.size() >= limit){
-            if (waitlist.contains(s)){
-                return false; //if the student is on the waitlist, return false.
-            }
-            else{
-                waitlist.add(s); //otherwise, add student to the waitlist because limit is reached
-                return false;
-            }
+            return checkWaitlist(s);
         }
         else{
             studentsEnrolled.add(s); //if the student is not enrolled and there is still spots left, add the student
@@ -91,6 +79,17 @@ public class Course {
         }
 
     }
+
+    public boolean checkWaitlist(Student s){
+        if (waitlist.contains(s)){
+            return false; //if the student is on the waitlist, return false.
+        }
+        else{
+            waitlist.add(s); //otherwise, add student to the waitlist because limit is reached
+            return false;
+        }
+    }
+
 
     public void dropStudent(Student s){
         if (studentsEnrolled.contains(s)) {

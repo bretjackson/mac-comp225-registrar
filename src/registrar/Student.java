@@ -10,15 +10,15 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name; //name of student
+    public String studentName; //studentName of student
     public Set<Course> courses; //courses the student is enrolled in? rename...there is a function also called enrolledIn
 
     /**
-     * constructor for Student...should probably set the name here in addition to remembering the set of courses
+     * constructor for Student...should probably set the studentName here in addition to remembering the set of courses
      */
     public Student(String s){
         this.courses = new HashSet<>();
-        this.name = s;
+        this.studentName = s;
     }
 
 
