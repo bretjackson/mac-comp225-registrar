@@ -35,7 +35,7 @@ public class Student {
      * @param c
      * @return
      */
-    public boolean checkCourseEnrollStatus(Course c){
+    public boolean enrolledIn(Course c){
         if(c.checkStudentEnrollStatus(this)) {
             courses.add(c);
             return true;

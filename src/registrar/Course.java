@@ -60,7 +60,7 @@ public class Course {
     /**
      * checks the enrollment status of the student in the course.
      * @param s
-     * @return
+     * @return boolean value
      */
     public boolean checkStudentEnrollStatus(Student s) {
 

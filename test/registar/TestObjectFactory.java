@@ -28,7 +28,7 @@ public class TestObjectFactory {
 
     public void enrollMultipleStudents(Course c, int count) {
         for(; count > 0; count--)
-            makeStudent("Anonymous student " + count).checkCourseEnrollStatus(c);
+            makeStudent("Anonymous student " + count).enrolledIn(c);
     }
 
     public List<Course> allCourses() {
