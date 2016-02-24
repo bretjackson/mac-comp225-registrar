@@ -10,6 +10,7 @@ import java.util.Set;
 public class Student {
 
     public String name;
+
     public Set<Course> enrolledIn;
 
     public Student(){
@@ -18,6 +19,10 @@ public class Student {
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setEnrolledIn(Set<Course> enrolledIn) {
+        this.enrolledIn = enrolledIn;
     }
 
     public Set<Course> getCourses(){
@@ -35,7 +40,7 @@ public class Student {
     }
 
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
+        if (getCourses().contains(c)) {
             enrolledIn.remove(c);
         }
         c.dropStudent(this);
