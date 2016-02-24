@@ -16,27 +16,27 @@ public class Course {
     private String courseTitle;
     private int enrollLimit;
 
-    public Course(){
+    public Course() {
         enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
         enrollLimit = 16;
     }
 
-    public void setCatalogNumber(String number){
+    public void setCatalogNumber(String number) {
         this.catalogNumber = number;
     }
 
-    public void setCourseTitle(String title){
+    public void setCourseTitle(String title) {
         this.courseTitle = title;
     }
 
-    public int getEnrollmentLimit(){
+    public int getEnrollmentLimit() {
         return enrollLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
+    public boolean setEnrollmentLimit(int limit) {
         //If students are enrolled you can't change the enrollLimit
-        if (enrolledStudents.size() == 0){
+        if (enrolledStudents.size() == 0) {
             this.enrollLimit = limit;
             return true;
         }
@@ -45,22 +45,24 @@ public class Course {
 
     /**
      * Checks if there is still room available in a course.
+     *
      * @return - true if there is still space for someone to enroll in the course
      */
     public boolean spaceAvailable() {
         return enrollLimit > enrolledStudents.size();
     }
 
-    public Set<Student> getEnrolledStudents(){
+    public Set<Student> getEnrolledStudents() {
         return enrolledStudents;
     }
 
-    public List<Student> getWaitList(){
+    public List<Student> getWaitList() {
         return waitlist;
     }
 
     /**
      * Add a student to the waitlist.
+     *
      * @param student - the student to be added to the course waitlist
      */
     public void addToWaitlist(Student student) {
@@ -71,18 +73,20 @@ public class Course {
 
     /**
      * Enroll a student in a course by adding them to the list of students in the course.
+     *
      * @param student - student to be added to the course
      */
-    public void enrollStudent(Student student){
+    public void enrollStudent(Student student) {
         enrolledStudents.add(student);
     }
 
     /**
      * Drop the student from the course list of students.
      * If there is a waitlist add the next student to the course.
+     *
      * @param student - the student to be dropped from the waitlist
      */
-    public void dropStudent(Student student){
+    public void dropStudent(Student student) {
         // Remove the student from the course
         if (enrolledStudents.contains(student)) {
             enrolledStudents.remove(student);
@@ -101,7 +105,9 @@ public class Course {
      */
     public void checkWaitlist() {
         // Make sure there is space in the course
-        if (!spaceAvailable()) { return; }
+        if (!spaceAvailable()) {
+            return;
+        }
 
         // Add first student on the waitlist to the course
         if (waitlist.size() > 0) {
