@@ -16,33 +16,40 @@ public class Course {
     private String name;
     private int limit;
 
+    //looks fine?
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
         limit = 16;
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
+    //looks fine?
+    public void setCatalogNumber(String coursenumber){
+        this.number = coursenumber;
     }
 
-    public void setTitle(String title){
-        this.name = title;
+    //looks fine?
+    public void setTitle(String courseTitle){
+        this.name = courseTitle;
     }
 
+    //looks fine
     public int getEnrollmentLimit(){
         return limit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
+    public boolean setEnrollmentLimit(int newLimit){
         //If students are enrolled you can't change the limit
         if (enrolledIn.size() == 0){
-            this.limit = limit;
+            this.limit = newLimit;
             return true;
         }
-        return false;
+        // return false if students have already enrolled indicating the limit can't be changed
+        else
+            return false;
     }
 
+    //these look fine...?
     public Set<Student> getStudents(){
         return enrolledIn;
     }
@@ -52,32 +59,37 @@ public class Course {
     }
 
     public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+        if(enrolledIn.contains(s)){
+            //catch a student already being enrolled
             return true;
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
-            return false;
+        //if student can be added to class, add them
+        if(enrolledIn.size() < limit){
+            enrolledIn.add(s);
+            return true;
         }
-        enrolledIn.add(s);
-        return true;
+        //else fit them to the waitlist
+        else if(enrolledIn.size() >= limit && !waitlist.contains(s)){
+            waitlist.add(s);
+        }
+        return false;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+    public void dropStudent(Student studentRemove){
+        if (enrolledIn.contains(studentRemove)) {
+            enrolledIn.remove(studentRemove);
             if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+                //I feel like Queue would make more sense for waitlist than a list but when I convert queue into a list it tries to override all the queue functions.
+                Student studentToEnroll = waitlist.remove(0);
+                studentToEnroll.enrollIn(this);
             }
         }
-        else if (waitlist.contains(s)){
+    }
+
+    public void dropStudentFromWaitlist(Student s){
+        //quick function for removing a student on the waitlist
+        if(waitlist.contains(s)){
             waitlist.remove(s);
         }
     }
-
 }
