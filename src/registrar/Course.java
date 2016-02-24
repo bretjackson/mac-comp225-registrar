@@ -30,17 +30,19 @@ public class Course {
         this.name = title;
     }
 
-    public int getEnrollmentLimit(){
-        return limit;
-    }
-
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (getStudents().size() != 0){
             this.limit = limit;
             return true;
         }
-        return false;
+        else{
+            return false;
+        }
+    }
+
+    public int getEnrollmentLimit(){
+        return limit;
     }
 
     public Set<Student> getStudents(){
@@ -52,32 +54,52 @@ public class Course {
     }
 
     public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+        if (getStudents().contains(s)){ /*if student is already on enrolled List, return True */
             return true;
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
+        if (addToWaitList(s)) {
             return false;
         }
-        enrolledIn.add(s);
+        getStudents().add(s);
         return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+    public boolean addToWaitList(Student s) {
+        /*
+        Adds student to waitlist if enrolled list is full and not already on the waitlist.
+         */
+        if (getStudents().size() >= limit){ /*if enrolled list is greater than or equal to the limit */
+            if (getWaitList().contains(s)){ /*if student is already in the wait list */
+                return true;
             }
+            getWaitList().add(s); /*add student to wait list*/
+            return true;
         }
-        else if (waitlist.contains(s)){
+        return false;
+    }
+
+    public void dropStudent(Student s){
+        /*
+        if enrolled, remove student from enrolled list and adds first student off the waiting list.
+        if on the waiting list, just remove student.
+         */
+        if (getStudents().contains(s)) {
+            enrolledIn.remove(s);
+            addOffWaitList();
+        }
+        else if (getWaitList().contains(s)){
             waitlist.remove(s);
         }
     }
 
+    public void addOffWaitList() {
+        /*
+        If waiting list is not empty, add student off waiting list to enrolled list.
+         */
+        if (getWaitList().size() > 0) { /*if waiting list not empty_ */
+            Student toEnroll = waitlist.remove(0);
+            enrolledIn.add(toEnroll);
+            toEnroll.enrolledIn.add(this);
+        }
+    }
 }
