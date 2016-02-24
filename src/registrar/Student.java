@@ -23,6 +23,10 @@ public class Student {
         return enrolledCourses;
     }
 
+    public boolean isEnrolled(Course course) {
+        return enrolledCourses.contains(course) && course.getEnrolledStudents().contains(this);
+    }
+
     /**
      * Enroll a student in a course if there is room.
      * If there is not room, add the student to the waitlist for the course
@@ -32,10 +36,7 @@ public class Student {
      */
     public boolean enrollInCourse(Course course) {
         // Check if student is already enrolled in the course
-        if (enrolledCourses.contains(this)) {
-            return true;
-        }
-        if (course.getEnrolledStudents().contains(this)) {
+        if(this.isEnrolled(course)) {
             return true;
         }
 
