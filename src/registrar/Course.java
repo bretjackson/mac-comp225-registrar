@@ -72,7 +72,8 @@ public class Course {
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
                 enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+                toEnroll.enrollIn(this);
+
             }
         }
         else if (waitlist.contains(s)){
