@@ -12,10 +12,13 @@ public class Course {
 
     private Set<Student> enrolledIn;
     private List<Student> waitlist;
-    private String number;
-    private String name;
+    private String catalogNumber;
+    private String courseName;
     private int limit;
 
+    /**
+     * Constructs a new Course object with default limit at 16
+     */
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
@@ -23,17 +26,22 @@ public class Course {
     }
 
     public void setCatalogNumber(String number){
-        this.number = number;
+        this.catalogNumber = number;
     }
 
-    public void setTitle(String title){
-        this.name = title;
+    public void setTitle(String name){
+        this.courseName = name;
     }
 
     public int getEnrollmentLimit(){
         return limit;
     }
 
+    /**
+     * Sets enrollment limit of the class if there are no students enrolled yet
+     * @param limit new limit of class size
+     * @return true if limit was reset, false if not reset
+     */
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
         if (enrolledIn.size() == 0){
@@ -51,32 +59,51 @@ public class Course {
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    /**
+     * Enrolls a student in this class if there is room. If there is not room, student is put on the waitlist.
+     * @param student
+     * @return true if enrolled successfully, false if not enrolled and put onto waitlist
+     */
+    public boolean enrollIn(Student student){
+        //case where student is already in course
+        if (enrolledIn.contains(student)){
             return true;
         }
+        //case where course is full
         if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
+            if (!waitlist.contains(student)){
+                waitlist.add(student); //add student to waitlist if not already on it
             }
-            waitlist.add(s);
             return false;
         }
-        enrolledIn.add(s);
+        //otherwise student can enroll regularly
+        enrolledIn.add(student);
         return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
-            }
+    /**
+     * Removes a student from the course or waitlist. If student is removed from course,
+     * the next student on the waitlist is put into the course.
+     * @param student Student to be removed from course
+     */
+    public void dropStudent(Student student){
+        if (enrolledIn.contains(student)) {
+            enrolledIn.remove(student);
+            enrollFromWaitList();
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        else if (waitlist.contains(student)){
+            waitlist.remove(student);
+        }
+    }
+
+    /**
+     * If there are students on the waitlist, enrolls the first student in the list
+     */
+    private void enrollFromWaitList() {
+        if (waitlist.size() > 0) {
+            Student toEnroll = waitlist.remove(0);
+            enrolledIn.add(toEnroll);
+            toEnroll.enrolledIn.add(this);
         }
     }
 
