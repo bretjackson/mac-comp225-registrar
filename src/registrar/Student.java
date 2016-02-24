@@ -1,7 +1,6 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -9,11 +8,11 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    private String name; // was public
+    private Set<Course> courses; // was public
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        courses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,12 +20,18 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return courses;
     }
 
+    /**
+     * Enroll student in specified course as long as the student isn't already enrolled in it
+     * and there is space in the course
+     * @param c
+     * @return
+     */
     public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+        if(c.isEnrolled(this)) { //what does the this mean?
+            courses.add(c);
             return true;
         }
         else {
@@ -34,9 +39,13 @@ public class Student {
         }
     }
 
+    /**
+     * Drops a specific course
+     * @param c
+     */
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (courses.contains(c)) {
+            courses.remove(c);
         }
         c.dropStudent(this);
     }
