@@ -51,7 +51,7 @@ public class RegistrarTest {
     public void studentCanEnroll() {
         sally.enrollIn(comp225);
         assertEquals(set(comp225), sally.getCourses());
-        assertEquals(set(sally), comp225.getStudents());
+        assertEquals(set(sally), comp225.getEnrolledStudents());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         sally.enrollIn(comp225);
         assertEquals(set(comp225), sally.getCourses());
-        assertEquals(set(sally), comp225.getStudents());
+        assertEquals(set(sally), comp225.getEnrolledStudents());
     }
 
 
@@ -76,7 +76,7 @@ public class RegistrarTest {
         factory.enrollMultipleStudents(comp225, 15);
         assertTrue(sally.enrollIn(comp225));
         assertEquals(list(), comp225.getWaitList());
-        assertTrue(comp225.getStudents().contains(sally));
+        assertTrue(comp225.getEnrolledStudents().contains(sally));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class RegistrarTest {
         factory.enrollMultipleStudents(comp225, 16);
         assertFalse(sally.enrollIn(comp225));
         assertEquals(list(sally), comp225.getWaitList());
-        assertFalse(comp225.getStudents().contains(sally));
+        assertFalse(comp225.getEnrolledStudents().contains(sally));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         factory.enrollMultipleStudents(comp225, 20);
         assertTrue(sally.enrollIn(comp225)); // full now, but Sally was already enrolled
-        assertTrue(comp225.getStudents().contains(sally));
+        assertTrue(comp225.getEnrolledStudents().contains(sally));
         assertFalse(comp225.getWaitList().contains(sally));
     }
 
@@ -131,7 +131,7 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         sally.drop(comp225);
         assertEquals(set(), sally.getCourses());
-        assertEquals(set(), comp225.getStudents());
+        assertEquals(set(), comp225.getEnrolledStudents());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class RegistrarTest {
         sally.enrollIn(math6);
         sally.drop(comp225);
         assertEquals(set(math6), sally.getCourses());
-        assertEquals(set(fred), comp225.getStudents());
+        assertEquals(set(fred), comp225.getEnrolledStudents());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class RegistrarTest {
         zongo.enrollIn(comp225);
         fred.enrollIn(comp225);
         sally.drop(comp225);
-        assertTrue(comp225.getStudents().contains(zongo));
+        assertTrue(comp225.getEnrolledStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
     }
 
@@ -183,7 +183,7 @@ public class RegistrarTest {
         for(Course c : s.getCourses())
             assertTrue(
                     s + " thinks they are enrolled in " + c + ", but " + c + " does not have them in the list of students",
-                    c.getStudents().contains(s));
+                    c.getEnrolledStudents().contains(s));
     }
 
     private void checkCourseInvariants(Course c) {
@@ -193,13 +193,13 @@ public class RegistrarTest {
                 waitListUnique.size(),
                 c.getWaitList().size());
 
-        waitListUnique.retainAll(c.getStudents());
+        waitListUnique.retainAll(c.getEnrolledStudents());
         assertEquals(
                 c + " contains students who are both registered and waitlisted",
                 Collections.emptySet(),
                 waitListUnique);
 
-        for(Student s : c.getStudents())
+        for(Student s : c.getEnrolledStudents())
             assertTrue(
                     c + " thinks " + s + " is enrolled, but " + s + " doesn't think they're in the class",
                     s.getCourses().contains(c));
@@ -211,10 +211,10 @@ public class RegistrarTest {
 
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
-                        + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+                        + ", but has " + c.getEnrolledStudents().size() + " students",
+                c.getEnrolledStudents().size() <= c.getEnrollmentLimit());
 
-        if(c.getStudents().size() < c.getEnrollmentLimit())
+        if(c.getEnrolledStudents().size() < c.getEnrollmentLimit())
             assertEquals(
                     c + " is not full, but has students waitlisted",
                     Collections.emptyList(),
