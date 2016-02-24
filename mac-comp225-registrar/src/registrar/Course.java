@@ -56,26 +56,39 @@ public class Course {
             return true;
         }
         if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
+            putOnWaitlist(s);
             return false;
         }
         enrolledIn.add(s);
         return true;
     }
 
+    public boolean putOnWaitlist(Student s) {
+        if (waitlist.contains(s)){
+            return true;
+        }
+        waitlist.add(s);
+        return true;
+    }
+
     public void dropStudent(Student s){
         if (enrolledIn.contains(s)) {
             enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
-            }
+            enrollWaitList(s);
         }
-        else if (waitlist.contains(s)){
+        removeWaitList(s);
+    }
+
+    public void enrollWaitList(Student s){
+        if (waitlist.size()>0){
+            Student toEnroll = waitlist.remove(0);
+            enrolledIn.add(toEnroll);
+            toEnroll.enrolledIn.add(this);
+        }
+    }
+
+    public void removeWaitList(Student s){
+        if (waitlist.contains(s)){
             waitlist.remove(s);
         }
     }
