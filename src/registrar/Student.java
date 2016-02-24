@@ -54,7 +54,7 @@ public class Student {
         else if (c.getWaitList().contains(this)) {
             return "waitList";
         }
-        return "notEnrolled";
+        else return "notEnrolled";
         }
-
 }
+

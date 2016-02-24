@@ -86,7 +86,7 @@ public class Course {
             enrolledIn.remove(s);
             enroll_nextWaiting();
         }
-        else if (waitlist.contains(s)){
+        else if (s.courseStatus(this)=="waitList"){
             waitlist.remove(s);
         }
     }
