@@ -10,17 +10,30 @@ import java.util.Set;
  */
 public class Student {
 
-    public String studentName; //Name of student
-    public Set<Course> courses; //courses the student is enrolled in? rename...there is a function also called enrolledIn
+
+
+    private String studentName; //Name of student
+    private Set<Course> courses; //courses the student is enrolled in? rename...there is a function also called enrolledIn
 
     /**
      * constructor for Student...should probably set the studentName here in addition to remembering the set of courses
      */
-    public Student(String s){
+    public Student(String student){
         this.courses = new HashSet<>();
-        this.studentName = s;
+        this.studentName = student;
     }
 
+    public void setStudentName(String studentName) {
+        //defensive programming
+//        if (studentName == null){
+//            throw new IllegalAccessException("NAMES CANNOT BE NULL");
+//        }
+        this.studentName = studentName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
 
     /**
      * a getter method for getting the set of courses the student is enrolled in
@@ -32,12 +45,12 @@ public class Student {
 
     /**
      *
-     * @param c
+     * @param course
      * @return boolean value
      */
-    public boolean enrolledIn(Course c){
-        if(c.checkStudentEnrollStatus(this)) {
-            courses.add(c);
+    public boolean enrolledIn(Course course){
+        if(course.enroll(this)) {
+            courses.add(course);
             return true;
         }
         else {
@@ -47,12 +60,12 @@ public class Student {
 
     /**
      *
-     * @param c
+     * @param course
      */
-    public void drop(Course c){
-        if (courses.contains(c)) {
-            courses.remove(c);
+    public void drop(Course course){
+        if (courses.contains(course)) {
+            courses.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }
