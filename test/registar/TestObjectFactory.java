@@ -3,13 +3,13 @@ package registar;
 import registrar.Course;
 import registrar.Student;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 
 /**
  * Created by paul on 2015/4/17.
+ *
  */
 public class TestObjectFactory {
     private List<Student> students = new LinkedList<Student>();
@@ -32,7 +32,7 @@ public class TestObjectFactory {
 
     public void enrollMultipleStudents(Course c, int count) {
         for(; count > 0; count--)
-            makeStudent("Anonymous student " + count).enrollIn(c);
+            makeStudent("Anonymous student " + count).joinCourse(c);
     }
 
     public List<Course> allCourses() {
