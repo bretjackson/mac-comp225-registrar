@@ -10,10 +10,10 @@ import java.util.Set;
  */
 public class Course {
 
-    private Set<Student> students;
+    private Set<Student> students; // was enrolledin
     private List<Student> waitlist;
     private String number;
-    private String name;
+    private String title;
     private int limit;
 
     public Course(){
@@ -27,7 +27,7 @@ public class Course {
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
@@ -62,7 +62,7 @@ public class Course {
      * @return
      */
     public boolean isEnrolled(Student s){
-        if (s.getCourses().contains(s)){
+        if (students.contains(s)){
             return true;
         }
         if (students.size() >= limit){
@@ -85,7 +85,9 @@ public class Course {
             students.remove(s);
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
-                isEnrolled(toEnroll);
+                students.add(toEnroll);
+                toEnroll.getCourses().add(this);
+                //isEnrolled(toEnroll);
             }
         }
         else if (waitlist.contains(s)){

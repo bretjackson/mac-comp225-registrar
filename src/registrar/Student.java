@@ -8,8 +8,8 @@ import java.util.Set;
  */
 public class Student {
 
-    private String name;
-    private Set<Course> courses;
+    private String name; // was public
+    private Set<Course> courses; // was public
 
     public Student(){
         courses = new HashSet<>();
