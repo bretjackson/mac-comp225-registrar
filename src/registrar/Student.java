@@ -8,51 +8,32 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
+    public String studentName;
     public Set<Course> enrolledCourses;
 
     public Student(){
         enrolledCourses = new HashSet<>();
     }
 
-    public void setName(String studentName){
-        this.name = studentName;
+    public void setStudentName(String studentName){
+        this.studentName = studentName;
     }
 
     public Set<Course> getCourses(){
         return enrolledCourses;
     }
 
-    /**
-     * Enroll a student in a course.
-     * @param course - the course that the student wishes to enroll in
-     * @return boolean - if the course registration is successful
-     */
-    public boolean enrollIn(Course course){
-        // If student is already enrolled in course then stop
-        if (this.enrolledCourses.contains(course)) { return false; }
-        if (course.getEnrolledStudents().contains(this)) { return false;}
-
-        // If course is full, add the student to the waitlist
-        if (course.getWaitList().size() >= course.getEnrollmentLimit()) {
-            // If student is already on waitlist, don't add them again
-            if (!course.getWaitList().contains(this)) {
-                course.addToWaitlist(this);
-            }
+    public boolean enrollInCourse(Course course){
+        if(course.enrollStudent(this)) {
+            enrolledCourses.add(course);
+            return true;
+        }
+        else {
             return false;
         }
-
-        // Add student to course
-        this.enrolledCourses.add(course);
-        course.addStudent(this);
-        return true;
     }
 
-    /**
-     * Drop a course for a student
-     * @param course - the course that the student wishes to drop
-     */
-    public void drop(Course course){
+    public void dropCourse(Course course){
         if (enrolledCourses.contains(course)) {
             enrolledCourses.remove(course);
         }
