@@ -1,7 +1,6 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -9,35 +8,46 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    private String studentName;
+    public Set<Course> coursesEnrolledIn;
 
     public Student(){
-        enrolledIn = new HashSet<>();
-    }
+        coursesEnrolledIn = new HashSet<>();
+    }//Student Object
 
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public Set<Course> getCourses(){
-        return enrolledIn;
-    }
-
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    /**
+     * Enrolles a student into a course
+     * @param course a course to enrole a student in
+     * @return whether or not the student is in this particular course
+     */
+    public boolean enrollIn(Course course){
+        if(course.enrollIn(this)) {//If the student can get into this course
+            coursesEnrolledIn.add(course);//add course into this student's list
             return true;
         }
-        else {
+        else {//If the student can't get into this course
             return false;
         }
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+    /**
+     * Used to let a student drop a course
+     * @param course a course the student wants to drop
+     */
+    public void drop(Course course){
+        if (coursesEnrolledIn.contains(course)) {
+            coursesEnrolledIn.remove(course);//takes this course off the student's list
         }
-        c.dropStudent(this);
+        course.dropStudent(this);//takes student off that course's list
     }
+
+    //Getters and Setters
+    public Set<Course> getCourses(){
+        return coursesEnrolledIn;
+    }
+
+    public void setStudentName(String studentName){
+        this.studentName = studentName;
+    }
+
 }
