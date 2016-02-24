@@ -9,8 +9,16 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
+    private String name;
     public Set<Course> enrolledIn;
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Course> getEnrolledIn() {
+        return enrolledIn;
+    }
 
     public Student(){
         enrolledIn = new HashSet<>();
@@ -20,13 +28,17 @@ public class Student {
         this.name = name;
     }
 
+    public void setEnrolledIn(Set<Course> enrolledIn) {
+        this.enrolledIn = enrolledIn;
+    }
+
     public Set<Course> getCourses(){
         return enrolledIn;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    public boolean enrollIn(Course course){
+        if(course.enrollIn(this)) {
+            enrolledIn.add(course);
             return true;
         }
         else {
@@ -34,10 +46,10 @@ public class Student {
         }
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+    public void drop(Course course){
+        if (enrolledIn.contains(course)) {
+            enrolledIn.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }
