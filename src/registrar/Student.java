@@ -1,7 +1,6 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -9,35 +8,59 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    public String studentName;
+    public Set<Course> enrolledCourses;
 
-    public Student(){
-        enrolledIn = new HashSet<>();
+    public Student() {
+        enrolledCourses = new HashSet<>();
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
-    public Set<Course> getCourses(){
-        return enrolledIn;
+    public Set<Course> getCourses() {
+        return enrolledCourses;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    public boolean isEnrolled(Course course) {
+        return enrolledCourses.contains(course) && course.getEnrolledStudents().contains(this);
+    }
+
+    /**
+     * Enroll a student in a course if there is room.
+     * If there is not room, add the student to the waitlist for the course
+     *
+     * @param course - the course that the student wishes to add
+     * @return true if the student is successfully enrolled in the course
+     */
+    public boolean enrollInCourse(Course course) {
+        // Check if student is already enrolled in the course
+        if (this.isEnrolled(course)) {
             return true;
         }
-        else {
+
+        // If there is not room in the course add the student to the waitlist
+        if (!course.spaceAvailable()) {
+            course.addToWaitlist(this);
             return false;
         }
+
+        // Otherwise, enroll the student in the course
+        enrolledCourses.add(course);
+        course.enrollStudent(this);
+        return true;
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+    /**
+     * Drop a course from a student's schedule.
+     *
+     * @param course - the course the student wishes to drop
+     */
+    public void dropCourse(Course course) {
+        if (enrolledCourses.contains(course)) {
+            enrolledCourses.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }

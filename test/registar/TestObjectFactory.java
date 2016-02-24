@@ -3,7 +3,6 @@ package registar;
 import registrar.Course;
 import registrar.Student;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class TestObjectFactory {
 
     public Student makeStudent(String name) {
         Student s = new Student();
-        s.setName(name);
+        s.setStudentName(name);
         students.add(s);
         return s;
     }
@@ -25,14 +24,14 @@ public class TestObjectFactory {
     public Course makeCourse(String catalogNumber, String title) {
         Course c = new Course();
         c.setCatalogNumber(catalogNumber);
-        c.setTitle(title);
+        c.setCourseTitle(title);
         courses.add(c);
         return c;
     }
 
     public void enrollMultipleStudents(Course c, int count) {
         for(; count > 0; count--)
-            makeStudent("Anonymous student " + count).enrollIn(c);
+            makeStudent("Anonymous student " + count).enrollInCourse(c);
     }
 
     public List<Course> allCourses() {
