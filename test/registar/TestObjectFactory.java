@@ -17,7 +17,7 @@ public class TestObjectFactory {
 
     public Student makeStudent(String name) {
         Student s = new Student();
-        s.setName(name);
+        s.setStudentName(name);
         students.add(s);
         return s;
     }
