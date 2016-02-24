@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
+    private Set<Student> studentsEnrolled;
     private List<Student> waitlist;
     private String number;
     private String name;
@@ -20,7 +20,7 @@ public class Course {
     Constructor for a course
      */
     public Course(){
-        enrolledIn = new HashSet<>();
+        studentsEnrolled = new HashSet<>();
         waitlist = new ArrayList<>();
         limit = 16;
     }
@@ -55,7 +55,7 @@ public class Course {
      */
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (studentsEnrolled.size() == 0){
             this.limit = limit;
             return true;
         }
@@ -68,7 +68,7 @@ public class Course {
      * @return a set of students that are enrolled in the course
      */
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return studentsEnrolled;
     }
 
     /**
@@ -86,10 +86,10 @@ public class Course {
      */
     public boolean enrollIn(Student s){
         //Checks to see if student is already enrolled
-        if (enrolledIn.contains(s)){
+        if (studentsEnrolled.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
+        if (studentsEnrolled.size() >= limit){
             //Checks to see if student is already on the waitlist
             if (waitlist.contains(s)){
                 return false;
@@ -97,7 +97,7 @@ public class Course {
             waitlist.add(s);
             return false;
         }
-        enrolledIn.add(s);
+        studentsEnrolled.add(s);
         return true;
     }
 
@@ -107,8 +107,8 @@ public class Course {
      */
     public void dropStudent(Student s){
         //If in a class, remove them
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+        if (studentsEnrolled.contains(s)) {
+            studentsEnrolled.remove(s);
             editWaitList();
         }
         //If on the waitlist, remove them
@@ -123,9 +123,9 @@ public class Course {
      */
     public void editWaitList(){
         if (waitlist.size() > 0) {
-            Student toEnroll = waitlist.remove(0);
-            enrolledIn.add(toEnroll);
-            toEnroll.enrolledIn.add(this);
+            Student nextUp = waitlist.remove(0);
+            studentsEnrolled.add(nextUp);
+            nextUp.coursesOfStudent.add(this);
         }
     }
 
