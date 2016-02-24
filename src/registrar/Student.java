@@ -23,6 +23,11 @@ public class Student {
         return enrolledCourses;
     }
 
+    /**
+     * Enroll a student in a course.
+     * @param course - the course that the student wishes to enroll in
+     * @return boolean - if the course registration is successful
+     */
     public boolean enrollIn(Course course){
         // If student is already enrolled in course then stop
         if (this.enrolledCourses.contains(course)) { return false; }
@@ -43,6 +48,10 @@ public class Student {
         return true;
     }
 
+    /**
+     * Drop a course for a student
+     * @param course - the course that the student wishes to drop
+     */
     public void drop(Course course){
         if (enrolledCourses.contains(course)) {
             enrolledCourses.remove(course);

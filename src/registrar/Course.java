@@ -16,38 +16,38 @@ public class Course {
     private String title;
     private int enrollmentLimit;
 
-    public Course(){
+    public Course() {
         enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
         enrollmentLimit = 16;
     }
 
-    public void setCatalogNumber(String courseNum){
+    public void setCatalogNumber(String courseNum) {
         this.number = courseNum;
     }
 
-    public void setTitle(String courseTitle){
+    public void setTitle(String courseTitle) {
         this.title = courseTitle;
     }
 
-    public int getEnrollmentLimit(){
+    public int getEnrollmentLimit() {
         return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
+    public boolean setEnrollmentLimit(int limit) {
         //If students are enrolled you can't change the enrollmentLimit
-        if (enrolledStudents.size() == 0){
+        if (enrolledStudents.size() == 0) {
             this.enrollmentLimit = limit;
             return true;
         }
         return false;
     }
 
-    public Set<Student> getEnrolledStudents(){
+    public Set<Student> getEnrolledStudents() {
         return enrolledStudents;
     }
 
-    public List<Student> getWaitList(){
+    public List<Student> getWaitList() {
         return waitlist;
     }
 
@@ -61,32 +61,23 @@ public class Course {
         return true;
     }
 
-
-
-    public boolean enrollIn(Student student){
-        if (enrolledStudents.contains(student)){
-            return true;
-        }
-        if (enrolledStudents.size() >= enrollmentLimit){
-            if (waitlist.contains(student)){
-                return false;
-            }
-            waitlist.add(student);
-            return false;
-        }
-        enrolledStudents.add(student);
-        return true;
-    }
-
+    /**
+     * Drop a student from the current course.
+     * If there is a waitlist, move the first student into the course.
+     * @param student - the student that wishes to drop the course
+     */
     public void dropStudent(Student student){
         if (enrolledStudents.contains(student)) {
             enrolledStudents.remove(student);
+
+            // If there are students on the waitlist, enroll the first one
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
-                enrolledStudents.add(toEnroll);
-                toEnroll.enrolledCourses.add(this);
+                toEnroll.enrollIn(this);
             }
         }
+
+        // If the student is on the waitlist for the course, drop the student
         else if (waitlist.contains(student)){
             waitlist.remove(student);
         }
