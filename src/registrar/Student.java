@@ -1,19 +1,19 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Edited by MarcioPorto for COMP 225 Refactoring activity
  */
 public class Student {
 
     public String name;
-    public Set<Course> enrolledIn;
+    public Set<Course> coursesEnrolledIn;
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        coursesEnrolledIn = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,23 +21,32 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return coursesEnrolledIn;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    /*
+    * This function enrolls a student in a course if the student is not enrolled in it yet.
+    * @param  c the course to be added
+    * @return true if successful, false otherwise
+    * */
+    public boolean joinCourse(Course c){
+        if(c.addStudentToCourse(this)) {
+            coursesEnrolledIn.add(c);
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
+    /*
+    * This function drops a student from a course if the student is enrolled in it.
+    * @param  c the course to be dropped
+    * @return void
+    * */
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (coursesEnrolledIn.contains(c)) {
+            coursesEnrolledIn.remove(c);
         }
+        // Drops student from the list of students in the course
         c.dropStudent(this);
     }
 }
