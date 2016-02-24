@@ -55,32 +55,32 @@ public class Course {
         return waitlist;
     }
 
-    public boolean addStudent(Student s){
-        if (enrolledStudents.contains(s)){
+    public boolean addStudent(Student student){
+        if (enrolledStudents.contains(student)){
             return true;
         }
         if (enrolledStudents.size() >= limit){
-            if (waitlist.contains(s)){
+            if (waitlist.contains(student)){
                 return false;
             }
-            waitlist.add(s);
+            waitlist.add(student);
             return false;
         }
-        enrolledStudents.add(s);
+        enrolledStudents.add(student);
         return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledStudents.contains(s)) {
-            enrolledStudents.remove(s);
+    public void dropStudent(Student student){
+        if (enrolledStudents.contains(student)) {
+            enrolledStudents.remove(student);
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
                 enrolledStudents.add(toEnroll);
                 toEnroll.enrolledCourses.add(this);
             }
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        else if (waitlist.contains(student)){
+            waitlist.remove(student);
         }
     }
 
