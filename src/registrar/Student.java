@@ -24,13 +24,23 @@ public class Student {
     }
 
     public boolean enrollIn(Course course){
-        if(course.enrollIn(this)) {
-            enrolledCourses.add(course);
-            return true;
-        }
-        else {
+        // If student is already enrolled in course then stop
+        if (this.enrolledCourses.contains(course)) { return false; }
+        if (course.getEnrolledStudents().contains(this)) { return false;}
+
+        // If course is full, add the student to the waitlist
+        if (course.getWaitList().size() >= course.getEnrollmentLimit()) {
+            // If student is already on waitlist, don't add them again
+            if (!course.getWaitList().contains(this)) {
+                course.addToWaitlist(this);
+            }
             return false;
         }
+
+        // Add student to course
+        this.enrolledCourses.add(course);
+        course.addStudent(this);
+        return true;
     }
 
     public void drop(Course course){

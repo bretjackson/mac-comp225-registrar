@@ -51,6 +51,18 @@ public class Course {
         return waitlist;
     }
 
+    public boolean addStudent(Student student) {
+        enrolledStudents.add(student);
+        return true;
+    }
+
+    public boolean addToWaitlist(Student student) {
+        waitlist.add(student);
+        return true;
+    }
+
+
+
     public boolean enrollIn(Student student){
         if (enrolledStudents.contains(student)){
             return true;
