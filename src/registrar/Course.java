@@ -12,8 +12,8 @@ public class Course {
 
     private Set<Student> enrolledIn;
     private List<Student> waitlist;
-    private String number;
-    private String name;
+    private String courseNumber;
+    private String courseName;
     private int limit;
 
     public Course(){
@@ -22,12 +22,12 @@ public class Course {
         limit = 16;
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
+    public void setCatalogNumber(String courseNumber){
+        this.courseNumber = courseNumber;
     }
 
-    public void setTitle(String title){
-        this.name = title;
+    public void setTitle(String courseName){
+        this.courseName = courseName;
     }
 
     public int getEnrollmentLimit(){
@@ -52,7 +52,11 @@ public class Course {
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
+    /* addToClass is called by Student, when one tries to enroll in a class,
+     checks if that is ok, and adds them to the list of enrolled students
+      */
+
+    public boolean addToClass(Student s){
         if (enrolledIn.contains(s)){
             return true;
         }
@@ -67,18 +71,20 @@ public class Course {
         return true;
     }
 
+    //enrolls next available student in the waiting list
+    public void enroll_nextWaiting(){
+        if (waitlist.size() > 0) {
+            enrolledIn.add(waitlist.get(0));
+            waitlist.get(0).coursesEnrolledIn.add(this);
+            waitlist.remove(0);
+        }
+    }
+
+    //called by student.drop
     public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
+        if (s.courseStatus(this)=="enrolled") {
             enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-
-                /*Eliminated additional variable "toEnroll" and exposed waitlist.get(0) for each reference to the new student
-                This clarifies that we are referring to the first student in the waiting list*/
-
-                enrolledIn.add(waitlist.get(0));
-                waitlist.get(0).enrolledIn.add(this);
-                waitlist.remove(0);
-            }
+            enroll_nextWaiting();
         }
         else if (waitlist.contains(s)){
             waitlist.remove(s);
