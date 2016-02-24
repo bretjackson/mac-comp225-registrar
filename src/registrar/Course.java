@@ -80,7 +80,7 @@ public class Course {
     }
 
     /**
-     * Checks if student is enrolled
+     * Enrolls a student in a course
      * @param s student
      * @return
      */
@@ -88,7 +88,7 @@ public class Course {
         if (enrolledIn.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
+        else if (enrolledIn.size() >= limit){
             if (waitlist.contains(s)){
                 return false;
             }
