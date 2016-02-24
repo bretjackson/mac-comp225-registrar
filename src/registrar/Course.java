@@ -60,35 +60,27 @@ public class Course {
     }
 
     /**
-     * Enroll a student in a course by adding them to the list of students in the course.
-     * If there is not room in the course, add student to the waitlist.
-     * @param student - student to be added to the course
-     * @return true if the student is successfully enrolled in the course
+     * Add a student to the waitlist.
+     * @param student - the student to be added to the course waitlist
      */
-    public boolean enrollStudent(Student student){
-        // Check if the student is already enrolled in the course
-        if (enrolledStudents.contains(student)){
-            return true;
-        }
-
-        // If the course is full, add the student to the waitlist
-        if (!spaceAvailable()){
-            if (waitlist.contains(student)){
-                return false;
-            }
+    public void addToWaitlist(Student student) {
+        if (!waitlist.contains(student)) {
             waitlist.add(student);
-            return false;
         }
+    }
 
-        // Otherwise, enroll the student
+    /**
+     * Enroll a student in a course by adding them to the list of students in the course.
+     * @param student - student to be added to the course
+     */
+    public void enrollStudent(Student student){
         enrolledStudents.add(student);
-        return true;
     }
 
     /**
      * Drop the student from the course list of students.
      * If there is a waitlist add the next student to the course.
-     * @param student
+     * @param student - the student to be dropped from the waitlist
      */
     public void dropStudent(Student student){
         // Remove the student from the course

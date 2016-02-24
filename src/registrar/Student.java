@@ -24,20 +24,26 @@ public class Student {
     }
 
     /**
-     * Enroll a student in a course if there is room and then update the course
+     * Enroll a student in a course if there is room.
      * If there is not room, add the student to the waitlist for the course
      * @param course - the course that the student wishes to add
      * @return true if the student is successfully enrolled in the course
      */
     public boolean enrollInCourse(Course course){
-        if(enrolledCourses.contains(this)) {return false;}
-        if(course.enrollStudent(this)) {
-            enrolledCourses.add(course);
-            return true;
-        }
-        else {
+        // Check if student is already enrolled in the course
+        if(enrolledCourses.contains(this)) {return true;}
+        if(course.getEnrolledStudents().contains(this)) {return true;}
+
+        // If there is not room in the course add the student to the waitlist
+        if(!course.spaceAvailable()) {
+            course.addToWaitlist(this);
             return false;
         }
+
+        // Otherwise, enroll the student in the course
+        enrolledCourses.add(course);
+        course.enrollStudent(this);
+        return true;
     }
 
     /**
