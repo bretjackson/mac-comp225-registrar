@@ -9,15 +9,15 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
+    public String studentName;
     public Set<Course> enrolledIn;
 
     public Student(){
         enrolledIn = new HashSet<>();
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setStudentName(String studentName){
+        this.studentName = studentName;
     }
 
     public Set<Course> getCourses(){
@@ -29,9 +29,7 @@ public class Student {
             enrolledIn.add(c);
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public void drop(Course c){
