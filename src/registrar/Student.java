@@ -12,18 +12,32 @@ public class Student {
     public String name;
     public Set<Course> enrolledIn;
 
+    //Constructor for student that sets up a hash tag for the students enrollment
     public Student(){
         enrolledIn = new HashSet<>();
     }
 
+    /**
+     * Sets the name of a student
+     * @param name is the desired name of the student
+     */
     public void setName(String name){
         this.name = name;
     }
 
+    /**
+     * Gets the courses of a student
+     * @return the courses a student is enrolled in
+     */
     public Set<Course> getCourses(){
         return enrolledIn;
     }
 
+    /**
+     * Enrolls a student in a course
+     * @param c the course to be enrolled in
+     * @return true if the student is successfully enrolled, else false
+     */
     public boolean enrollIn(Course c){
         if(c.enrollIn(this)) {
             enrolledIn.add(c);
@@ -34,6 +48,9 @@ public class Student {
         }
     }
 
+    /*
+     *Drops a student from a course
+     */
     public void drop(Course c){
         if (enrolledIn.contains(c)) {
             enrolledIn.remove(c);

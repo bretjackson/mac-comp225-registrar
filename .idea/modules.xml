@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/225-registrar.iml" filepath="$PROJECT_DIR$/225-registrar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mac-comp225-registrar.iml" filepath="$PROJECT_DIR$/mac-comp225-registrar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mac-comp225-registrar1.iml" filepath="$PROJECT_DIR$/mac-comp225-registrar1.iml" />
     </modules>
   </component>
 </project>
