@@ -32,13 +32,16 @@ public class RegistrarTest {
 
     @Before
     public void createCourses() {
-        comp225 = factory.makeCourse("COMP 225", "Software Fun Fun");
+        comp225 = factory.makeCourse("COMP 225", "Software Fun");
         comp225.setEnrollmentLimit(16);
 
         math6 = factory.makeCourse("Math 6", "All About the Number Six");
+        math6.setEnrollmentLimit(16);
 
         basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!");
+        basketWeaving101.setEnrollmentLimit(16);
     }
+
 
     // ------ Enrolling ------
 
@@ -67,7 +70,6 @@ public class RegistrarTest {
 
     @Test
     public void coursesHaveEnrollmentLimits() {
-        comp225.setEnrollmentLimit(16);
         assertEquals(16, comp225.getEnrollmentLimit());
     }
 
