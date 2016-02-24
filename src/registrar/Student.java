@@ -9,34 +9,35 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    private String name;
+    private Set<Course> enrolledCourses;
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        enrolledCourses = new HashSet<>();
     }
 
     public void setName(String name){
         this.name = name;
     }
+    public String getName(){
+        return name;
+    }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return enrolledCourses;
     }
 
     public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+        if(c.enrollStudent(this)) {
+            enrolledCourses.add(c);
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+        if (enrolledCourses.contains(c)) {
+            enrolledCourses.remove(c);
         }
         c.dropStudent(this);
     }
