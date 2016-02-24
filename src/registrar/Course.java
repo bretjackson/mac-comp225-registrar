@@ -86,18 +86,28 @@ public class Course {
         // Remove the student from the course
         if (enrolledStudents.contains(student)) {
             enrolledStudents.remove(student);
-
-            // If there is a waitlist, add the first student to the course
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledStudents.add(toEnroll);
-                toEnroll.enrolledCourses.add(this);
-            }
         }
 
         // If the student was on the waitlist, remove them
-        else if (waitlist.contains(student)){
+        else if (waitlist.contains(student)) {
             waitlist.remove(student);
+        }
+        // If there is a waitlist, add the first student to the course
+        checkWaitlist();
+    }
+
+    /**
+     * If there is space in the course and someone on the waitlist, add them to the course
+     */
+    public void checkWaitlist() {
+        // Make sure there is space in the course
+        if (!spaceAvailable()) { return; }
+
+        // Add first student on the waitlist to the course
+        if (waitlist.size() > 0) {
+            Student nextStudent = waitlist.remove(0);
+            enrolledStudents.add(nextStudent);
+            nextStudent.enrolledCourses.add(this);
         }
     }
 
