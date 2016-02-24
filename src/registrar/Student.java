@@ -36,7 +36,7 @@ public class Student {
      */
     public boolean enrollInCourse(Course course) {
         // Check if student is already enrolled in the course
-        if(this.isEnrolled(course)) {
+        if (this.isEnrolled(course)) {
             return true;
         }
 
