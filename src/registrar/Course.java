@@ -10,16 +10,68 @@ import java.util.Set;
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
+    private Set<Student> enrolledStudents;
     private List<Student> waitlist;
+    private int enrollmentLimit;
+
     private String number;
     private String name;
-    private int limit;
 
     public Course(){
-        enrolledIn = new HashSet<>();
+        enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        enrollmentLimit= 16;
+    }
+
+    public boolean setEnrollmentLimit(int limit){
+        // If students are enrolled you can't change the enrollment limit
+        if (enrolledStudents.size() == 0){
+            this.enrollmentLimit = limit;
+            return true;
+        }
+        // enrollment limit should be greater than zero
+        if (limit <= 0){
+            return false;
+        }
+
+        return false;
+    }
+
+    public boolean enrollIn(Student student){
+        // is enrolled
+        if (enrolledStudents.contains(student)){
+            return true;
+        }
+        // is not enrolled but added to waitlist
+        else if (waitlist.contains(student)){
+            return false;
+        }
+        // not enrolled, not added to waitlist, and class is full, then add to waitlist
+        else if (enrolledStudents.size() >= enrollmentLimit){
+            waitlist.add(student);
+            return false;
+        }
+        // not enrolled, class not full, add to class
+        enrolledStudents.add(student);
+        return true;
+    }
+
+    public void dropStudent(Student student){
+        if (waitlist.contains(student)){
+            waitlist.remove(student);
+        }
+        else if (enrolledStudents.contains(student)) {
+            enrolledStudents.remove(student);
+            enrollNextOnWaitlist();
+        }
+    }
+
+    private void enrollNextOnWaitlist() {
+        if (waitlist.size() > 0) {
+            Student toEnroll = waitlist.remove(0);
+            enrolledStudents.add(toEnroll);
+            toEnroll.enrollIn(this);
+        }
     }
 
     public void setCatalogNumber(String number){
@@ -31,53 +83,15 @@ public class Course {
     }
 
     public int getEnrollmentLimit(){
-        return limit;
-    }
-
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
-            this.limit = limit;
-            return true;
-        }
-        return false;
+        return enrollmentLimit;
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return enrolledStudents;
     }
 
     public List<Student> getWaitList(){
         return waitlist;
-    }
-
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
-            return true;
-        }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
-            return false;
-        }
-        enrolledIn.add(s);
-        return true;
-    }
-
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
-            }
-        }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
-        }
     }
 
 }
