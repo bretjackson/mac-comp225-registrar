@@ -58,11 +58,11 @@ public class Course {
 
 
     /**
-     * checks the enrollment status of the student in the course.
+     * checks the enrollment status of the student in the course. package private
      * @param s
      * @return boolean value
      */
-    public boolean enroll(Student s) {
+     boolean enroll(Student s) {
 
         //check if student is in the set of studentsEnrolled
         return studentsEnrolled.contains(s) || addStudent(s) ;
@@ -98,9 +98,8 @@ public class Course {
                 enrollNextFromWaitList();
             }
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
-        }
+        waitlist.remove(s);
+
     }
 
     private void enrollNextFromWaitList(){
