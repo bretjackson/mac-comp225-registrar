@@ -10,73 +10,75 @@ import java.util.Set;
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
+    private Set<Student> studentsEnrolled;
     private List<Student> waitlist;
-    private String number;
-    private String name;
-    private int limit;
+    private String catalogNumber;
+    private String title;
+    private int enrollmentLimit;
 
     public Course(){
-        enrolledIn = new HashSet<>();
+        studentsEnrolled = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        enrollmentLimit = 16;
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
-    }
+    public void setCatalogNumber(String number){ this.catalogNumber = number; }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return enrollmentLimit;
     }
 
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
-            this.limit = limit;
+        if (studentsEnrolled.isEmpty()) {
+            this.enrollmentLimit = limit;
             return true;
         }
         return false;
     }
 
-    public Set<Student> getStudents(){
-        return enrolledIn;
+    public Set<Student> getEnrolledStudents(){
+        return studentsEnrolled;
     }
 
     public List<Student> getWaitList(){
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    public boolean enrolled(Student s){
+        if (studentsEnrolled.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
+        if (studentsEnrolled.size() >= enrollmentLimit){
             if (waitlist.contains(s)){
                 return false;
             }
             waitlist.add(s);
             return false;
         }
-        enrolledIn.add(s);
+        studentsEnrolled.add(s);
         return true;
     }
 
     public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+        if (studentsEnrolled.contains(s)) {
+            studentsEnrolled.remove(s);
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+                studentsEnrolled.add(toEnroll);
+                toEnroll.coursesEnrolled.add(this);
             }
         }
+        // removes s from waitlist if he/she is on waitlist
         else if (waitlist.contains(s)){
             waitlist.remove(s);
+        }
+        else if (!(studentsEnrolled.contains(s)) && !(waitlist.contains(s))) {
+            System.out.println("Student " + s + " not enrolled in course or on waitlist");
         }
     }
 
