@@ -40,6 +40,7 @@ public class Course {
             this.limit = limit;
             return true;
         }
+        System.out.println("Could not change the course size limit. Students are already enrolled in this course");
         return false;
     }
 
@@ -70,9 +71,13 @@ public class Course {
         if (enrolledIn.contains(s)) {
             enrolledIn.remove(s);
             if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+
+                /*Eliminated additional variable "toEnroll" and exposed waitlist.get(0) for each reference to the new student
+                This clarifies that we are referring to the first student in the waiting list*/
+
+                enrolledIn.add(waitlist.get(0));
+                waitlist.get(0).enrolledIn.add(this);
+                waitlist.remove(0);
             }
         }
         else if (waitlist.contains(s)){
