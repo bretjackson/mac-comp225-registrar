@@ -15,29 +15,37 @@ public class Student {
     public Student(){
         enrolledIn = new HashSet<>();
     }
-
+    public String getName(){
+        return name;
+    }
     public void setName(String name){
         this.name = name;
     }
-
-    public Set<Course> getCourses(){
+   public Set<Course> getCourses(){
         return enrolledIn;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
-            return true;
+    public boolean enrollIn(Course course) {
+        //if course is full, student cannot enroll
+        if (course.getStudents().size() > course.getEnrollmentLimit()){
+            return false;
         }
         else {
-            return false;
+            //if student is enrolled or can successfully enroll, student can add course to his list of courses
+            if (course.enrollIn(this)) {
+                enrolledIn.add(course);
+                return true;
+            } else {
+                return false;
+          }
         }
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+
+    public void drop(Course course){
+        if (enrolledIn.contains(course)) {
+            enrolledIn.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }
