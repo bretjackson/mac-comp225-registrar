@@ -9,8 +9,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    private String name;
+    private Set<Course> enrolledIn;
 
     public Student(){
         enrolledIn = new HashSet<>();
@@ -29,15 +29,11 @@ public class Student {
             enrolledIn.add(c);
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
-        }
+        enrolledIn.remove(c);
         c.dropStudent(this);
     }
 }
