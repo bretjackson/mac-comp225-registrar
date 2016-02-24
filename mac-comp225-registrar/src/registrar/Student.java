@@ -9,8 +9,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledIn;
+    private String name;
+    private Set<Course> enrolledIn;
 
     public Student(){
         enrolledIn = new HashSet<>();

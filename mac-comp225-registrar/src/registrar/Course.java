@@ -79,16 +79,15 @@ public class Course {
     public void removeStudentEnrollWaitListed(Student s){
         if (enrolledIn.contains(s)) {
             enrolledIn.remove(s);
-            enrollWaitListed();
+            if(waitlist.size()>0){
+                Student toEnroll = waitlist.remove(0);
+                enrollWaitListed(toEnroll);
+            }
         }
     }
 
-    public void enrollWaitListed(){
-        if (waitlist.size()>0){
-            Student toEnroll = waitlist.remove(0);
-            enrolledIn.add(toEnroll);
-            toEnroll.enrolledIn.add(this);
-        }
+    public void enrollWaitListed(Student s){
+        s.enrollIn(this);
     }
 
     public void removeStudentWaitList(Student s){
