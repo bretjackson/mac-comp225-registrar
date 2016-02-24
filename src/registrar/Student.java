@@ -9,11 +9,11 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> enrolledCourses;
+    private String name;
+    private Set<Course> courses; //if public, anyone anywhere can enroll a student in any class (bad)
 
     public Student(){
-        enrolledCourses = new HashSet<>();
+        courses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,12 +21,12 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledCourses;
+        return courses;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledCourses.add(c);
+    public boolean enrollIn(Course course){
+        if(course.enroll(this)) {
+            courses.add(course);
             return true;
         }
         else {
@@ -34,10 +34,10 @@ public class Student {
         }
     }
 
-    public void drop(Course c){
-        if (enrolledCourses.contains(c)) {
-            enrolledCourses.remove(c);
+    public void drop(Course course) {
+        if (courses.contains(course)) {
+            courses.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }
