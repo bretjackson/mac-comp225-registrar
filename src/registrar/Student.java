@@ -24,20 +24,23 @@ public class Student {
         return enrolledIn;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    public boolean enrollIn(Course courseAdd){
+        if(courseAdd.enrollIn(this)){
+            //if the student was added to the enrolled list
+            enrolledIn.add(courseAdd);
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+    public void drop(Course courseDrop){
+        if (enrolledIn.contains(courseDrop)) {
+            enrolledIn.remove(courseDrop);
+            courseDrop.dropStudent(this);
         }
-        c.dropStudent(this);
+        //remove from waitlist
+        else if(courseDrop.getWaitList().contains(this)){
+            courseDrop.dropStudentFromWaitlist(this);
+        }
     }
 }
