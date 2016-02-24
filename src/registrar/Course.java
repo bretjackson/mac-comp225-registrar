@@ -1,5 +1,7 @@
 package registrar;
 
+// Seems pretty minimal..
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,72 +14,85 @@ public class Course {
 
     private Set<Student> enrolledIn;
     private List<Student> waitlist;
-    private String number;
-    private String name;
-    private int limit;
+    private String catalog_number;
+    private String title;
+    private int max_size; 
 
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        max_size = 0;
+        catalog_number = "";
+        title = "";
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
+    public void setCatalogNumber(String catalog_number){
+        this.catalog_number = catalog_number;
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return this.max_size;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
+    public boolean setEnrollmentLimit(int max_size){
+        //If students are enrolled you can't change the max_size
         if (enrolledIn.size() == 0){
-            this.limit = limit;
+            this.max_size = max_size;
             return true;
         }
         return false;
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return this.enrolledIn;
     }
 
     public List<Student> getWaitList(){
-        return waitlist;
+        return this.waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    // Adds the student to the course or the waitlist
+    public boolean enrollIn(Student student){
+        if (this.enrolledIn.contains(student)){
+            return true;
+        }else if (this.enrolledIn.size() >= this.max_size){
+            this.addToWaitlist(student);
+            return false;
+        } else {
+            this.enrolledIn.add(student);
             return true;
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
-            return false;
-        }
-        enrolledIn.add(s);
-        return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+    private void addToWaitlist(Student student) {
+            if (!this.waitlist.contains(student)){
+                    this.waitlist.add(student);
             }
+    }
+
+
+    // Removes the student from the course or the waitlist
+    public void dropStudent(Student student){
+        if (this.enrolledIn.contains(student)) {
+            this.enrolledIn.remove(student);
+            this.enrollFromWaitlist();
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        else if (waitlist.contains(student)){
+            waitlist.remove(student);
         }
+    }
+
+    // Add the first member of the waitlist to the class
+    private void enrollFromWaitlist() {
+            if (this.waitlist.size() > 0 && this.enrolledIn.size() < this.max_size) {
+                Student toEnroll = this.waitlist.remove(0);
+                this.enrolledIn.add(toEnroll);
+                toEnroll.enrolledIn.add(this); // if this returns false there is a large error
+            }
     }
 
 }
