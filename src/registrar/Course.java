@@ -5,20 +5,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 /**
- * Created by bjackson on 2/21/2016.
+ * This creates a course. A course has an enrollment limit, class roster, wait list, title, and number.
+ * A course can drop a student and pick up students from the wait list.
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
-    private List<Student> waitlist;
+    private Set<Student> classRoster;
+    private List<Student> waitList;
     private String number;
-    private String name;
+    private String title;
     private int limit;
 
     public Course(){
-        enrolledIn = new HashSet<>();
-        waitlist = new ArrayList<>();
+        classRoster = new HashSet<>();
+        waitList = new ArrayList<>();
         limit = 16;
     }
 
@@ -27,56 +29,53 @@ public class Course {
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
         return limit;
     }
 
+    public Set<Student> getRoster(){
+        return classRoster;
+    }
+
+    public List<Student> getWaitList(){
+        return waitList;
+    }
+
+    /**
+     * This sets an enrollment limit for a class if no students are in the class
+     * If students are enrolled the limit can not be changed.
+     * @param limit for class size
+     * @return true if limit was changed and false if limit could not be changed
+     */
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (classRoster.size() == 0){
             this.limit = limit;
             return true;
         }
         return false;
     }
 
-    public Set<Student> getStudents(){
-        return enrolledIn;
-    }
-
-    public List<Student> getWaitList(){
-        return waitlist;
-    }
-
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
-            return true;
-        }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
-            return false;
-        }
-        enrolledIn.add(s);
-        return true;
-    }
-
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+    /**
+     * Students are dropped from a class. They are removed from a class roster and if there is a wait list
+     * students from the wait list are automatically added to the class roster. Students can also drop from wait list.
+     * Student changes schedule if course is still in student schedule.
+     * @param student The student that is dropping from the course.
+     */
+    public void dropStudent(Student student){
+        if (classRoster.contains(student)) {
+            classRoster.remove(student);
+            student.classSchedule.remove(this);
+            if (waitList.size() > 0) {
+                Student toEnroll = waitList.remove(0);
+                classRoster.add(toEnroll);
+                toEnroll.classSchedule.add(this);
             }
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        else if (waitList.contains(student)){
+            waitList.remove(student);
         }
     }
 
