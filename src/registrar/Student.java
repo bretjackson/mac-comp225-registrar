@@ -23,7 +23,14 @@ public class Student {
         return enrolledCourses;
     }
 
+    /**
+     * Enroll a student in a course if there is room and then update the course
+     * If there is not room, add the student to the waitlist for the course
+     * @param course - the course that the student wishes to add
+     * @return true if the student is successfully enrolled in the course
+     */
     public boolean enrollInCourse(Course course){
+        if(enrolledCourses.contains(this)) {return false;}
         if(course.enrollStudent(this)) {
             enrolledCourses.add(course);
             return true;
@@ -33,6 +40,10 @@ public class Student {
         }
     }
 
+    /**
+     * Drop a course from a student's schedule.
+     * @param course - the course the student wishes to drop
+     */
     public void dropCourse(Course course){
         if (enrolledCourses.contains(course)) {
             enrolledCourses.remove(course);
