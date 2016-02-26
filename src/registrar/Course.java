@@ -1,82 +1,110 @@
 package registrar;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.LinkedList;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Keeps track of students enrolled in course and manages the course wait list.
  */
 public class Course {
+    private String catalogNumber;
+    private String title;
+    private int enrollmentLimit;
 
-    private Set<Student> enrolledIn;
-    private List<Student> waitlist;
-    private String number;
-    private String name;
-    private int limit;
+    private Set<Student> enrolled;
+    private List<Student> waitList;
 
     public Course(){
-        enrolledIn = new HashSet<>();
-        waitlist = new ArrayList<>();
-        limit = 16;
+        this(null, null, 16);
+    }
+
+    public Course(String catalogNumber, String title, int enrollmentLimit) {
+        this.catalogNumber = catalogNumber;
+        this.title = title;
+        this.enrollmentLimit = enrollmentLimit;
+        enrolled = new HashSet<Student>();
+        waitList = new LinkedList<Student>();
     }
 
     public void setCatalogNumber(String number){
-        this.number = number;
+        this.catalogNumber = number;
+    }
+
+    public String getCatalogNumber() {
+        return catalogNumber;
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return this.enrollmentLimit;
     }
 
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
-            this.limit = limit;
+        if (enrolled.isEmpty() && limit >= 0){
+            this.enrollmentLimit = limit;
             return true;
         }
         return false;
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return Collections.unmodifiableSet(enrolled);
     }
 
     public List<Student> getWaitList(){
-        return waitlist;
+        return Collections.unmodifiableList((List) waitList);
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
-            return true;
+    private void addToWaitList(Student student) {
+        if (!waitList.contains(student)){
+            waitList.add(student);
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
-            }
-            waitlist.add(s);
+    }
+
+    /*
+     * Enrolls student in course or adds student to wait list if enrollment limit reached.
+     * @return true if student already enrolled or successfully enrolled, false if student added to wait list
+     */
+    public boolean enroll(Student student){
+        if (enrolled.size() < enrollmentLimit || enrolled.contains(student)) {
+            enrolled.add(student);
+            return true;
+        } else {
+            addToWaitList(student);
             return false;
         }
-        enrolledIn.add(s);
-        return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
-            }
+    private void enrollNextWaitListed() {
+        if (waitList.size() > 0) {
+            Student nextStudent = waitList.remove(0);
+            enrolled.add(nextStudent);
+            nextStudent.enrolledCourses.add(this);
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+    }
+
+    /*
+     * Removes student from set of enrolled students or wait list if in either
+     */
+    public void dropStudent(Student s){
+        if (enrolled.contains(s)) {
+            enrolled.remove(s);
+            enrollNextWaitListed();
+        }
+        else if (waitList.contains(s)){
+            waitList.remove(s);
         }
     }
 

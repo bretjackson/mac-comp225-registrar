@@ -1,19 +1,19 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Manages set of classes a student in enrolled in.
  */
 public class Student {
 
     public String name;
-    public Set<Course> enrolledIn;
+    public Set<Course> enrolledCourses;
 
     public Student(){
-        enrolledIn = new HashSet<>();
+        enrolledCourses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -21,23 +21,24 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return enrolledCourses;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            enrolledIn.add(c);
+    /*
+     * Tries to enroll student in course, adds to enrolledCourses and returns true if successful.
+     */
+    public boolean enrollIn(Course course){
+        if(course.enroll(this)) {
+            enrolledCourses.add(course);
             return true;
         }
-        else {
-            return false;
-        }
+        else return false;
     }
 
-    public void drop(Course c){
-        if (enrolledIn.contains(c)) {
-            enrolledIn.remove(c);
+    public void drop(Course course){
+        if (enrolledCourses.contains(course)) {
+            enrolledCourses.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
     }
 }
