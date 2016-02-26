@@ -20,7 +20,7 @@ public class Course {
     }
 
     public String getCatalogNumber() {
-        return this.catalogNumber;
+        return catalogNumber;
     }
 
     public void setCatalogNumber(String catalogNumber) {
@@ -28,24 +28,31 @@ public class Course {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
+        if (title == null) {
+            throw new IllegalArgumentException("Course title cannot be null");
+        }
         this.title = title;
     }
 
-    public int getEnrollmentLimit(){
+    public int getEnrollmentLimit() {
         return enrollmentLimit;
     }
 
     public boolean setEnrollmentLimit(int enrollmentLimit) {
-        //If students are enrolled you can't change the limit
-        if (roster.isEmpty()){
-            this.enrollmentLimit = enrollmentLimit;
-            return true;
+        if (enrollmentLimit < 0) {
+            throw new IllegalArgumentException("Course enrollment limit cannot be less than zero");
         }
-        return false;
+
+        //If students are enrolled you can't change the limit
+        if (!roster.isEmpty()) {
+            return false;
+        }
+        this.enrollmentLimit = enrollmentLimit;
+        return true;
     }
 
     public Set<Student> getStudents(){
@@ -56,19 +63,35 @@ public class Course {
         return waitList;
     }
 
-    public boolean enroll(Student s){
-        if (roster.contains(s)){
+    public boolean enroll(Student student){
+        if (roster.contains(student)){
             return true;
         }
-        if (roster.size() >= enrollmentLimit) {
-            if (waitList.contains(s)){
-                return false;
-            }
-            waitList.add(s);
+        if (isFull()) {
+            addToWaitlist(student);
             return false;
         }
-        roster.add(s);
+        roster.add(student);
         return true;
+    }
+
+    //copied from bretjackson's repository at https://github.com/bretjackson/mac-comp225-registrar/blob/master/src/registrar/Course.java
+    private void addToWaitlist(Student student) {
+        if (!waitList.contains(student)) {
+            waitList.add(student);
+        }
+    }
+
+    //also copied from the above mentioned file
+    public boolean isFull() {
+        return roster.size() >= enrollmentLimit;
+    }
+
+    //same message as above
+    private void enrollNextFromWaitlist() {
+        if (!waitList.isEmpty()) {
+            waitList.poll().enrollIn(this);
+        }
     }
 
     public void dropStudent(Student s) {
