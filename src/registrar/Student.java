@@ -9,8 +9,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> coursesOfStudent;
+    private String name;
+    private Set<Course> coursesOfStudent;
 
     //Constructor for student that sets up a hash tag for the students enrollment
     public Student(){
@@ -18,12 +18,24 @@ public class Student {
     }
 
     /**
+     *
+     * @return the name of the student
+     */
+    public String getName(){
+        return name;
+    }
+
+    /**
      * Sets the name of a student
      * @param name is the desired name of the student
      */
     public void setName(String name){
+        if(name==null){
+            //throw new IllegalAccessException("Names cannot be null"); has error for some reason
+        }
         this.name = name;
     }
+
 
     /**
      * Gets the courses of a student
@@ -35,12 +47,12 @@ public class Student {
 
     /**
      * Enrolls a student in a course
-     * @param c the course to be enrolled in
+     * @param course the course to be enrolled in
      * @return true if the student is successfully enrolled, else false
      */
-    public boolean enrollIn(Course c){
-        if(c.enrollIn(this)) {
-            coursesOfStudent.add(c);
+    public boolean enrollInCourse(Course course){
+        if(course.enroll(this)) {
+            coursesOfStudent.add(course);
             return true;
         }
         else {
@@ -51,10 +63,15 @@ public class Student {
     /*
      *Drops a student from a course
      */
-    public void drop(Course c){
-        if (coursesOfStudent.contains(c)) {
-            coursesOfStudent.remove(c);
+    public void drop(Course course){
+        if (coursesOfStudent.contains(course)) {
+            coursesOfStudent.remove(course);
         }
-        c.dropStudent(this);
+        course.dropStudent(this);
+    }
+
+    @Override
+    public String toString(){
+        return getName();
     }
 }
