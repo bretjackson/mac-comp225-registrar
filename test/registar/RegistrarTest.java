@@ -32,12 +32,11 @@ public class RegistrarTest {
 
     @Before
     public void createCourses() {
-        comp225 = factory.makeCourse("COMP 225", "Software Fun Fun");
-        comp225.setEnrollmentLimit(16);
+        comp225 = factory.makeCourse("COMP 225", "Software Fun Fun", 16);
 
-        math6 = factory.makeCourse("Math 6", "All About the Number Six");
+        math6 = factory.makeCourse("Math 6", "All About the Number Six", 16);
 
-        basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!");
+        basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!", 16);
     }
 
     // ------ Enrolling ------

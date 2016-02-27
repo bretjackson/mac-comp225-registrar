@@ -22,10 +22,11 @@ public class TestObjectFactory {
         return s;
     }
 
-    public Course makeCourse(String catalogNumber, String title) {
+    public Course makeCourse(String catalogNumber, String title, int initial_limit) {
         Course c = new Course();
-        c.setCatalogNumber(catalogNumber);
+        c.setCourseID(catalogNumber);
         c.setTitle(title);
+        c.setEnrollmentLimit(initial_limit);
         courses.add(c);
         return c;
     }

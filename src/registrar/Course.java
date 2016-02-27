@@ -9,74 +9,129 @@ import java.util.Set;
  * Created by bjackson on 2/21/2016.
  */
 public class Course {
-
+    /**
+     * A set of the students enrolled in this course
+     */
     private Set<Student> enrolledIn;
+    /**
+     * A list of students waiting to enter this course
+     */
     private List<Student> waitlist;
-    private String number;
-    private String name;
+    /**
+     * The first four letters of the course's deparment, and it's unique number
+     */
+    private String courseID;
+    /**
+     * The title of the course
+     */
+    private String courseTitle;
+    /**
+     * The maximum number of students allowed to enroll in this course
+     */
     private int limit;
 
+    /**
+     * A constructor for Course objects, just initializes the data structures. IMPORTANT:
+     * You need to first set the course id, title, and limit before using the object
+     */
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        //took out so that it just initializes to 0, why was it 16 before, that seems arbitrary you have to se
+        //the limit now like you have to with courseID, and name
     }
 
-    public void setCatalogNumber(String number){
-        this.number = number;
+    /**
+     * Setter for courseID
+     * @param aIdNumber - the first four letters of the coures's department, and it's number
+     */
+    public void setCourseID(String aIdNumber){
+        this.courseID = aIdNumber;
     }
 
-    public void setTitle(String title){
-        this.name = title;
+    /**
+     * Setter for the course title
+     * @param name - the name of the course
+     */
+    public void setTitle(String name){
+        this.courseTitle = name;
     }
 
+    /**
+     * Getter for the limit
+     * @return - the maximum number of students than can enroll in this course
+     */
     public int getEnrollmentLimit(){
         return limit;
     }
 
+    /**
+     * Setter for the capacity of a class, you can only change the capacity if no students are enrolled
+     * @param limit - the new capacity that you would like to use
+     * @return returns a boolean to indicate success/failure of the operation
+     */
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (enrolledIn.size() < 1){ //changes to if the enrollment is less than 1, just to be safe
             this.limit = limit;
             return true;
         }
         return false;
     }
 
+    /**
+     * getter for the the set of students enrolled in this course
+     * @return - a set of all students enrolled in this course
+     */
     public Set<Student> getStudents(){
         return enrolledIn;
     }
 
+    /**
+     * getter for the wait list
+     * @return - a list, in order, of all the students waiting to enroll in this class
+     */
     public List<Student> getWaitList(){
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    /**
+     * Method for adding a student to this course
+     * @param aStudent the student you want to enter this course
+     * @return success/failure in enrolling, in case of failure the student is added to the waitlist
+     */
+    public boolean enrollIn(Student aStudent){
+        if (enrolledIn.contains(aStudent)){
             return true;
-        }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
+        } else {
+            if (enrolledIn.size() >= limit){
+                if (waitlist.contains(aStudent)){
+                    return false;
+                }
+                waitlist.add(aStudent);
                 return false;
             }
-            waitlist.add(s);
-            return false;
+            enrolledIn.add(aStudent);
+            return true;
         }
-        enrolledIn.add(s);
-        return true;
     }
 
-    public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+    /**
+     * Method to removes a student from this course. Automatically adds the next student on the wait list
+     * to the class.
+     * @param aStudent - the student that you want to drop from this course
+     */
+    public void dropStudent(Student aStudent){
+        if (enrolledIn.contains(aStudent)) {
+            enrolledIn.remove(aStudent);
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
                 enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+                toEnroll.enrollIn(this); //Changed to use the method, rather than private variables
             }
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        else if (waitlist.contains(aStudent)){
+            waitlist.remove(aStudent);
         }
     }
 
