@@ -36,7 +36,7 @@ public class Course {
 
     public boolean setEnrollmentLimit(int limit) {
         //If students are enrolled you can't change the enrollLimit
-        if (enrolledStudents.size() == 0) {
+        if (enrolledStudents.size() <= limit) {
             this.enrollLimit = limit;
             return true;
         }
