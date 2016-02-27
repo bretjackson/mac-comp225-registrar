@@ -1,112 +1,107 @@
 package registrar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
- * Refactored by sduong on 2/23/2016.
- * Courses can have a max enrollment enrollmentLimit on the number of students.
- * The enrollment enrollmentLimit cannot be changed once a student registers for the course.
  */
 public class Course {
 
-    private Set<Student> studentsEnrolled; //set of students enrolled
-    private List<Student> waitlist; //list of students on the waitlist
-    private String courseCode;
-    private String courseName;
-    private int enrollmentLimit;
+    private Set<Student> roster = new HashSet<>();
+    private List<Student> waitlist = new ArrayList<>();
+    private String catalogNumber;
+    private String title;
+    private int enrollmentLimit = 16;
 
-    /**
-     * Constructor for course, and courses should know the list of students enrolled in them.
-     */
-    public Course(String number, String title){
-        studentsEnrolled = new HashSet<>();
-        waitlist = new ArrayList<>();
-        enrollmentLimit = 16;
-        this.courseCode = number;
-        this.courseName = title;
+    public String getCatalogNumber() {
+        return catalogNumber;
     }
 
+    public void setCatalogNumber(String catalogNumber) {
+        this.catalogNumber = catalogNumber;
+    }
 
-    /**
-     * getter method to get the enrollment enrollmentLimit
-     * @return enrollmentLimit
-     */
-    public int getEnrollmentLimit(){
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        if(title == null) {
+            throw new IllegalArgumentException("course title cannot be null");
+        }
+
+        this.title = title;
+    }
+
+    public int getEnrollmentLimit() {
         return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the enrollmentLimit
-        if (studentsEnrolled.size() == 0){
-            this.enrollmentLimit = limit;
+    public boolean setEnrollmentLimit(int limit) {
+        if (limit < 0) {
+            throw new IllegalArgumentException("course cannot have negative enrollment limit: " + limit);
+        }
+
+        //If students are enrolled you can't change the limit
+        if (!roster.isEmpty()) {
+            return false;   // Consider making this IllegalStateException instead of boolean return val
+        }
+
+        this.enrollmentLimit = limit;
+        return true;
+    }
+
+    public Set<Student> getStudents() {
+        return Collections.unmodifiableSet(roster);
+    }
+
+    public List<Student> getWaitList() {
+        return Collections.unmodifiableList(waitlist);
+    }
+
+    boolean enroll(Student student) {
+        if (roster.contains(student)) {
             return true;
         }
-        return false;
-    }
-
-    public Set<Student> getStudents(){
-        return studentsEnrolled;
-    }
-
-    public List<Student> getWaitList(){
-        return waitlist;
-    }
-
-
-    /**
-     * checks the enrollment status of the student in the course. package private
-     * @param s
-     * @return boolean value
-     */
-     boolean enroll(Student s) {
-
-        //check if student is in the set of studentsEnrolled
-        return studentsEnrolled.contains(s) || addStudent(s) ;
-    }
-
-    public boolean addStudent(Student s){
-        //check if the number of students enrolled is equal or greater than the enrollmentLimit
-        if (studentsEnrolled.size() >= enrollmentLimit){
-            return checkWaitlist(s);
-        }
-        else{
-            studentsEnrolled.add(s); //if the student is not enrolled and there is still spots left, add the student
-            return true; //and return true
-        }
-
-    }
-
-    public boolean checkWaitlist(Student s){
-        if (waitlist.contains(s)){
-            return false; //if the student is on the waitlist, return false.
-        }
-        else{
-            waitlist.add(s); //otherwise, add student to the waitlist because enrollmentLimit is reached
+        if (isFull()) {
+            addToWaitlist(student);
             return false;
         }
+        roster.add(student);
+        return true;
     }
 
+    public boolean isFull() {
+        return roster.size() >= enrollmentLimit;
+    }
 
-    public void dropStudent(Student s){
-        if (studentsEnrolled.contains(s)) {
-            studentsEnrolled.remove(s);
-            if (!waitlist.isEmpty()) {
-                enrollNextFromWaitList();
-            }
+    private void addToWaitlist(Student s) {
+        if (!waitlist.contains(s)) {
+            waitlist.add(s);
         }
-        waitlist.remove(s);
-
     }
 
-    private void enrollNextFromWaitList(){
+    private void enrollNextFromWaitlist() {
+        if (!waitlist.isEmpty()) {
+            waitlist.remove(0).enrollIn(this);
+        }
+    }
 
-            Student studentToAdd = waitlist.remove(0);
-            studentsEnrolled.add(studentToAdd);
-            studentToAdd.enrolledIn(this);
+    void dropStudent(Student student) {
+        waitlist.remove(student);
+        if (roster.remove(student)) {
+            enrollNextFromWaitlist();
+        }
+    }
 
+    @Override
+    public String toString() {
+        return getTitle() + " (" + getCatalogNumber() + ")";
     }
 }
