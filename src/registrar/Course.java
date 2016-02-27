@@ -14,12 +14,12 @@ public class Course {
     private List<Student> waitlist;
     private String number;
     private String name;
-    private int limit;
+    private int enrollmentLimit;
 
     public Course(){
         studentsEnrolled = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        enrollmentLimit = -1; //unlimited enrollment by default
     }
 
     public void setCatalogNumber(String number){
@@ -31,13 +31,14 @@ public class Course {
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (studentsEnrolled.isEmpty()){
-            this.limit = limit;
+    public boolean setEnrollmentLimit(int enrollmentLimit){
+        //If students that are more students enrolled than the limit
+        //the user wants to set, the method cannot
+        if (studentsEnrolled.size() <= enrollmentLimit){
+            this.enrollmentLimit = enrollmentLimit;
             return true;
         }
         return false;
@@ -56,7 +57,7 @@ public class Course {
         if (studentsEnrolled.contains(s)){
             return true;
         }
-        if (studentsEnrolled.size() >= limit){
+        if (enrollmentLimit != -1 && studentsEnrolled.size() >= enrollmentLimit){
             addToWaitList(s);
             return false;
         }
@@ -83,6 +84,15 @@ public class Course {
         else if (waitlist.contains(s)){
             waitlist.remove(s);
         }
+    }
+
+    /**
+     * Removes enrollment limit. set it to -1, which
+     * in context is meaningless. Making the enrollment unlimited.
+     */
+
+    public void removeEnrollmentLimit(){
+        enrollmentLimit = -1;
     }
 
 }
