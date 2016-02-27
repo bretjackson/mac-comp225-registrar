@@ -113,7 +113,7 @@ public class Course {
         if (waitlist.size() > 0) {
             Student nextStudent = waitlist.remove(0);
             enrolledStudents.add(nextStudent);
-            nextStudent.enrolledCourses.add(this);
+            nextStudent.enrollStudent(this);
         }
     }
 

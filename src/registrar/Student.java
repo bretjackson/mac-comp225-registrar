@@ -8,8 +8,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String studentName;
-    public Set<Course> enrolledCourses;
+    private String studentName;
+    private Set<Course> enrolledCourses;
 
     public Student() {
         enrolledCourses = new HashSet<>();
@@ -25,6 +25,10 @@ public class Student {
 
     public boolean isEnrolled(Course course) {
         return enrolledCourses.contains(course) && course.getEnrolledStudents().contains(this);
+    }
+
+    public void enrollStudent(Course course) {
+        enrolledCourses.add(course);
     }
 
     /**
