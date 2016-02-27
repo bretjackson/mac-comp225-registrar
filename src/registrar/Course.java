@@ -69,6 +69,7 @@ public class Course {
         if (roster.contains(student)) {
             return true;
         }
+        removeEnrollmentLimit();
         if (isFull()) {
             addToWaitlist(student);
             return false;
@@ -98,6 +99,11 @@ public class Course {
         if (roster.remove(student)) {
             enrollNextFromWaitlist();
         }
+    }
+
+    public void removeEnrollmentLimit(){
+        //if there is a limit already set, you should be able to remove it to allow unlimited enrollment.
+        enrollmentLimit = roster.size()+1;
     }
 
     @Override
