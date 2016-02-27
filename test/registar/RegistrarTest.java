@@ -124,6 +124,13 @@ public class RegistrarTest {
         assertTrue(basketWeaving101.setEnrollmentLimit(8));
     }
 
+    @Test
+    public void cannotChangeEnrollmentLimitToLessThanNumStudents(){
+        sally.enrollInCourse(basketWeaving101);
+        fred.enrollInCourse(basketWeaving101);
+        assertFalse(basketWeaving101.setEnrollmentLimit(1));
+    }
+
     // ------ Drop courses ------
 
     @Test
