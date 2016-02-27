@@ -11,12 +11,12 @@ public class Course {
     private String title;
     private Set<Student> roster;
     private Queue<Student> waitList;
-    private int enrollmentLimit;
+    public int enrollmentLimit;
 
     public Course(){
         roster = new HashSet<>();
         waitList = new LinkedList<>();
-        enrollmentLimit = 16;
+        enrollmentLimit = Integer.MAX_VALUE;
     }
 
     public String getCatalogNumber() {
@@ -47,12 +47,12 @@ public class Course {
             throw new IllegalArgumentException("Course enrollment limit cannot be less than zero");
         }
 
-        //If students are enrolled you can't change the limit
-        if (!roster.isEmpty()) {
-            return false;
-        }
         this.enrollmentLimit = enrollmentLimit;
         return true;
+    }
+
+    public void removeEnrollmentLimit() {
+        this.enrollmentLimit = Integer.MAX_VALUE;
     }
 
     public Set<Student> getStudents(){
@@ -87,7 +87,7 @@ public class Course {
         return roster.size() >= enrollmentLimit;
     }
 
-    //same message as above
+    //also copied from Bret's repo
     private void enrollNextFromWaitlist() {
         if (!waitList.isEmpty()) {
             waitList.poll().enrollIn(this);

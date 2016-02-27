@@ -117,12 +117,13 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+    //This test should not work with Part 2
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -140,6 +141,7 @@ public class RegistrarTest {
         fred.enrollIn(comp225);
         sally.enrollIn(math6);
         sally.drop(comp225);
+
         assertEquals(set(math6), sally.getCourses());
         assertEquals(set(fred), comp225.getStudents());
     }
@@ -164,6 +166,31 @@ public class RegistrarTest {
         assertTrue(comp225.getStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
     }
+
+    //My new tests
+
+    //this test satisfies the first bullet point in Bret's repository
+    @Test
+    public void newCourseHasNoEnrollmentLimit() {
+        assertTrue(math6.getEnrollmentLimit() == Integer.MAX_VALUE);
+    }
+
+
+    //satisfies the second bullet point
+    @Test
+    public void testRemovingEnrollmentLimit() {
+        math6.setEnrollmentLimit(16);
+        math6.removeEnrollmentLimit();
+        assertTrue(math6.getEnrollmentLimit() == Integer.MAX_VALUE);
+    }
+
+    //satisfies third bullet point
+    @Test
+    public void changeEnrollmentLimitAfterAddingStudent() {
+        sally.enrollIn(math6);
+        assertTrue(math6.setEnrollmentLimit(25));
+    }
+
 
     // ------ Post-test invariant check ------
     //
