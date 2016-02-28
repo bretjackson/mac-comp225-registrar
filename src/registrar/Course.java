@@ -48,6 +48,9 @@ public class Course {
     public boolean setEnrollmentLimit(int limit) {
             if(!isEnrollmentLimit || limit > roster.size()) {
                 this.enrollmentLimit = limit;
+                while (!isFull && !waitlist.isEmpty()) {
+                        enrollNextFromWaitlist;
+                }
                 return true;
             }
             return false;
@@ -94,6 +97,7 @@ public class Course {
             waitlist.add(s);
         }
     }
+
 
     private void enrollAllFromWaitlist() {
             for(Student student : waitlist) {
