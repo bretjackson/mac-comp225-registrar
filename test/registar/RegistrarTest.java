@@ -51,6 +51,17 @@ public class RegistrarTest {
     }
 
     @Test
+    public void enrollIsUnlimited(){
+        comp225.setEnrollmentLimit(3);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        assertTrue(comp225.isFull());
+        comp225.removeEnrollmentLimit();
+        assertFalse(comp225.isFull());
+    }
+
+    @Test
     public void doubleEnrollingHasNoEffect() {
         sally.enrollIn(comp225);
         sally.enrollIn(comp225);
