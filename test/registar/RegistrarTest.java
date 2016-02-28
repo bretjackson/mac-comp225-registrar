@@ -191,7 +191,14 @@ public class RegistrarTest {
             factory.enrollMultipleStudents(comp225,15);
             comp225.removeEnrollmentLimit();
             assertTrue(comp225.getWaitlist().isEmpty());
+    }
 
+    @Test
+    public void autoFillFromWaitlistOnLimitChange {
+            comp225.setEnrollmentLimit(1);
+            factory.enrollMultipleStudents(comp225,15);
+            comp225.setEnrollmentLimit(10);
+            assertEquals(10,comp225.getStudents().size());
     }
 
     // ------ Post-test invariant check ------
