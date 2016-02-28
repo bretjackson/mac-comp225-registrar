@@ -13,14 +13,14 @@ public class Course {
 
     private Set<Student> studentsEnrolled;
     private List<Student> waitList;
-    private String number;
-    private String name;
-    private int limit;
+    private String catalogNumber;
+    private String title;
+    private int enrollmentLimit;
 
     public Course(){
         studentsEnrolled = new HashSet<>();
         waitList = new ArrayList<>();
-        limit = 16;
+        enrollmentLimit = -1;           // unlimited enrollment
     }
 
     public Set<Student> getStudents(){
@@ -32,29 +32,23 @@ public class Course {
     }
 
     public void setCatalogNumber(String number){
-        this.number = number;
+        this.catalogNumber = number;
     }
 
     public void setTitle(String title){
-        this.name = title;
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return enrollmentLimit;
     }
 
     /*
-    * This function sets the enrollment limit for a course, if no one has registered for it yet.
+    * This function sets the enrollment enrollmentLimit for a course.
     * @param  limit: the maximum number of students
-    * @return true if successful, false otherwise
     * */
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (studentsEnrolled.size() == 0){
-            this.limit = limit;
-            return true;
-        }
-        return false;
+    public void setEnrollmentLimit(int limit){
+        this.enrollmentLimit = limit;
     }
 
     /*
@@ -62,13 +56,13 @@ public class Course {
     * @param  s the student joining the course
     * @return true if successful, false otherwise
     * */
-    public boolean addStudentToCourse(Student s){
+    public boolean addStudent(Student s){
         // If the student is already in the list, just returns true
         if (studentsEnrolled.contains(s)){
             return true;
         }
         // If the class is full, add student to waitList
-        if (studentsEnrolled.size() >= limit){
+        if (enrollmentLimit != -1 && studentsEnrolled.size() >= enrollmentLimit){
             // If the student is already on the waitList, return false
             if (waitList.contains(s)){
                 return false;
@@ -105,9 +99,22 @@ public class Course {
     * @return void
     * */
     public void addFromWaitList(){
-        Student toEnroll = waitList.remove(0);
-        studentsEnrolled.add(toEnroll);
-        toEnroll.coursesEnrolledIn.add(this);
+        Student studentFromWaitList = waitList.remove(0);
+        studentsEnrolled.add(studentFromWaitList);
+        studentFromWaitList.joinCourse(this);
+    }
+
+    @Override
+    public String toString() {
+        return getTitle();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void removeEnrollmentLimit() {
+        this.enrollmentLimit = -1;
     }
 
 }

@@ -1,5 +1,6 @@
 package registrar;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,11 +10,15 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> coursesEnrolledIn;
+    private String name;
+    private Set<Course> coursesEnrolledIn;
 
     public Student(){
         coursesEnrolledIn = new HashSet<>();
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name){
@@ -21,17 +26,17 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return coursesEnrolledIn;
+        return Collections.unmodifiableSet(coursesEnrolledIn);
     }
 
     /*
     * This function enrolls a student in a course if the student is not enrolled in it yet.
-    * @param  c the course to be added
+    * @param  course the course to be added
     * @return true if successful, false otherwise
     * */
-    public boolean joinCourse(Course c){
-        if(c.addStudentToCourse(this)) {
-            coursesEnrolledIn.add(c);
+    public boolean joinCourse(Course course) {
+        if (course.addStudent(this)) {
+            coursesEnrolledIn.add(course);
             return true;
         }
         return false;
@@ -39,14 +44,19 @@ public class Student {
 
     /*
     * This function drops a student from a course if the student is enrolled in it.
-    * @param  c the course to be dropped
+    * @param  course the course to be dropped
     * @return void
     * */
-    public void drop(Course c){
-        if (coursesEnrolledIn.contains(c)) {
-            coursesEnrolledIn.remove(c);
+    public void drop(Course course){
+        if (coursesEnrolledIn.contains(course)) {
+            coursesEnrolledIn.remove(course);
         }
         // Drops student from the list of students in the course
-        c.dropStudent(this);
+        course.dropStudent(this);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

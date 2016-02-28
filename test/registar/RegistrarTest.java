@@ -118,10 +118,23 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.joinCourse(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+    public void enrollmentNotSetByDefault() {
+        assertEquals(factory.makeCourse("AWE 101", "Awesomeness 101").getEnrollmentLimit(), -1);
+    }
+
+    @Test
+    public void removeEnrollmentLimit() {
+        math6.setEnrollmentLimit(30);
+        math6.removeEnrollmentLimit();
+        assertEquals(math6.getEnrollmentLimit(), -1);
+    }
+
+    @Test
+    public void canChangeEnrollmentAnyTime() {
+        int old_limit = comp225.getEnrollmentLimit();
+        factory.enrollMultipleStudents(comp225, 16);
+        comp225.setEnrollmentLimit(40);
+        assertNotEquals(old_limit, comp225.getEnrollmentLimit());
     }
 
     // ------ Drop courses ------
@@ -209,10 +222,12 @@ public class RegistrarTest {
                     c + " lists " + s + " as waitlisted, but " + s + " thinks they are enrolled",
                     s.getCourses().contains(c));
 
-        assertTrue(
-                c + " has an enrollment limit of " + c.getEnrollmentLimit()
-                        + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+        if(c.getEnrollmentLimit() != -1) {
+            assertTrue(
+                    c + " has an enrollment limit of " + c.getEnrollmentLimit()
+                            + ", but has " + c.getStudents().size() + " students",
+                    c.getStudents().size() <= c.getEnrollmentLimit());
+        }
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(
