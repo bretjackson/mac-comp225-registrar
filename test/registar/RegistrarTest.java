@@ -62,8 +62,34 @@ public class RegistrarTest {
         assertEquals(set(sally), comp225.getStudents());
     }
 
-
     // ------ Enrollment limits ------
+
+    @Test
+    public void canDecreaseEnrollmentLimit(){
+        comp225.setEnrollmentLimit(20);
+        sally.enrollIn(comp225);
+        comp225.setEnrollmentLimit(10);
+        assertEquals(10, comp225.getEnrollmentLimit());
+        assertEquals(set(sally), comp225.getStudents());
+        assertEquals(set(comp225), sally.getCourses());
+    }
+
+    @Test
+    public void canIncreaseEnrollmentLimit(){
+        comp225.setEnrollmentLimit(2);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        comp225.setEnrollmentLimit(5);
+        assertTrue(comp225.getStudents().contains(zongo));
+        assertEquals(list(), comp225.getWaitList());
+    }
+
+    @Test
+    public void coursesHaveUnlimitedEnrollmentLimit(){
+        assertEquals(Integer.MAX_VALUE, math6.getEnrollmentLimit());
+    }
+
 
     @Test
     public void coursesHaveEnrollmentLimits() {
@@ -115,13 +141,6 @@ public class RegistrarTest {
         assertFalse(sally.enrollIn(comp225));
 
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
-    }
-
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
     }
 
     // ------ Drop courses ------
