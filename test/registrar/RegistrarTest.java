@@ -66,6 +66,36 @@ public class RegistrarTest {
     // ------ Enrollment limits ------
 
     @Test
+    public void coursesHaveNoEnrollmentLimitsUponCreation() {
+        Course newCourse = new Course();
+        assertEquals(newCourse.UNLIMITED_ENROLLMENT, newCourse.getEnrollmentLimit());
+    }
+
+    @Test
+    public void cannotSetEnrollmentLimitToLessThanStudentsEnrolled () {
+        comp225.setEnrollmentLimit(2);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        assertEquals(false, comp225.setEnrollmentLimit(0));
+    }
+
+    @Test
+    public void coursesWithoutEnrollmentLimitsHaveEmptyWaitLists() {
+        comp225.setEnrollmentLimit(0);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        assertEquals(3, comp225.getWaitList().size());
+
+        comp225.removeEnrollmentLimit();
+        assertEquals(set(comp225), sally.getCourses());
+        assertEquals(set(comp225), fred.getCourses());
+        assertEquals(set(comp225), zongo.getCourses());
+        assertEquals(set(sally, fred, zongo), comp225.getStudents());
+        assertEquals(true, comp225.getWaitList().isEmpty());
+    }
+
+    @Test
     public void coursesHaveEnrollmentLimits() {
         comp225.setEnrollmentLimit(16);
         assertEquals(16, comp225.getEnrollmentLimit());
@@ -117,12 +147,12 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -212,7 +242,8 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+                c.getStudents().size() <= c.getEnrollmentLimit() ||
+                        c.getEnrollmentLimit() == c.UNLIMITED_ENROLLMENT);
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(

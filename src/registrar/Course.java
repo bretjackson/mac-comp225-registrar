@@ -1,6 +1,7 @@
 package registrar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,11 +16,12 @@ public class Course {
     private String number;
     private String title;
     private int limit;
+    public static final int UNLIMITED_ENROLLMENT = -1;
 
     public Course() {
         enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        limit = UNLIMITED_ENROLLMENT;
     }
 
     public void setCatalogNumber(String number){
@@ -31,6 +33,10 @@ public class Course {
     }
 
     public void setTitle(String title){
+        if(title == null) {
+            throw new IllegalArgumentException("course title cannot be null");
+        }
+
         this.title = title;
     }
     
@@ -42,43 +48,62 @@ public class Course {
         return limit;
     }
 
+    public void removeEnrollmentLimit() {
+        this.limit = UNLIMITED_ENROLLMENT;
+        enrollEntireWaitList();
+    }
+
+    private void enrollEntireWaitList () {
+        while (!waitlist.isEmpty()) {
+            enrollNextOnWaitList();
+        }
+
+    }
+
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledStudents.size() == 0){
+        if (limit < enrolledStudents.size()) {
+            return false;
+        } else {
             this.limit = limit;
             return true;
         }
-        return false;
     }
 
     public Set<Student> getStudents(){
-        return enrolledStudents;
+        return Collections.unmodifiableSet(enrolledStudents);
     }
 
     public List<Student> getWaitList(){
-        return waitlist;
+        return Collections.unmodifiableList(waitlist);
     }
 
-    public boolean enrollStudent(Student s){
-        if (isWaitListable(s)){
-            addStudentToWaitList(s);
-            return false;
-        } else if (isEnrollable(s)) {
-            enrolledStudents.add(s);
+    public boolean enrollStudent(Student student) {
+        if (enrolledStudents.contains(student)) {
+            return true;
         }
+        if (isFull()) {
+            addStudentToWaitList(student);
+            return false;
+        }
+        enrolledStudents.add(student);
         return true;
     }
 
+    public boolean isFull() {
+        return enrolledStudents.size() >= limit &&
+                limit != UNLIMITED_ENROLLMENT;
+    }
+
+
     public void dropStudent(Student s){
-        if (enrolledStudents.contains(s)) {
-            enrolledStudents.remove(s);
+        if (enrolledStudents.remove(s)) {
             enrollNextOnWaitList();
         }
         waitlist.remove(s);
     }
 
-    private void enrollNextOnWaitList () {
-        if (waitlist.size() > 0) {
+    private void enrollNextOnWaitList() {
+        if (!waitlist.isEmpty()) {
             Student toEnroll = waitlist.remove(0);
             enrolledStudents.add(toEnroll);
             toEnroll.getCourses().add(this);
@@ -89,16 +114,6 @@ public class Course {
         if (!waitlist.contains(s)) {
             waitlist.add(s);
         }
-    }
-
-    private boolean isWaitListable (Student s) {
-        return (!enrolledStudents.contains(s) &&
-                enrolledStudents.size() >= limit);
-    }
-
-    private boolean isEnrollable (Student s) {
-        return (!enrolledStudents.contains(s) ||
-                enrolledStudents.size() < limit);
     }
 
 

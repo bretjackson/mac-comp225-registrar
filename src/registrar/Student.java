@@ -27,18 +27,16 @@ public class Student {
         return enrolledCourses;
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrollStudent(this)) {
-            enrolledCourses.add(c);
+    public boolean enrollIn(Course course){
+        if(course.enrollStudent(this)) {
+            enrolledCourses.add(course);
             return true;
         }
         return false;
     }
 
     public void drop(Course c){
-        if (enrolledCourses.contains(c)) {
-            enrolledCourses.remove(c);
-        }
+        enrolledCourses.remove(c);
         c.dropStudent(this);
     }
 }
