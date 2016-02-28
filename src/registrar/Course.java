@@ -86,7 +86,7 @@ public class Course {
     }
 
     public boolean isFull() {
-        return roster.size() >= enrollmentLimit;
+        return (isEnrollmentLimit() && roster.size() >= enrollmentLimit);
     }
 
     private void addToWaitlist(Student s) {
