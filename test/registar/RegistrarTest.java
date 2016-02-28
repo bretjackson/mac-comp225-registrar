@@ -3,15 +3,10 @@ package registar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import registrar.Course;
 import registrar.Student;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -20,7 +15,7 @@ public class RegistrarTest {
     // ------ Setup ------
 
     private TestObjectFactory factory = new TestObjectFactory();
-    private Course comp225, math6, basketWeaving101;
+    private Course comp225, math6, basketWeaving101, syntax;
     private Student sally, fred, zongo;
 
     @Before
@@ -36,7 +31,7 @@ public class RegistrarTest {
         comp225.setEnrollmentLimit(16);
 
         math6 = factory.makeCourse("Math 6", "All About the Number Six");
-
+        syntax = factory.makeCourse("English Syntax", "Introduction to English Syntax");
         basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!");
     }
 
@@ -118,10 +113,35 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+    public void cannotChangeEnrollmentLimitToLowerThanEnrolledStudents(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        zongo.enrollIn(basketWeaving101);
+        assertFalse(basketWeaving101.setEnrollmentLimit(1));
+        assertTrue(basketWeaving101.getStudents().contains(fred));
+        assertTrue(basketWeaving101.getStudents().contains(zongo));
+    }
+
+    @Test
+    public void canRemoveEnrollmentLimitAtAnyTime(){
+        basketWeaving101.setEnrollmentLimit(30);
+        factory.enrollMultipleStudents(basketWeaving101, 23);
+        assertTrue(basketWeaving101.getEnrollmentLimit() == 30);
+        basketWeaving101.removeEnrollmentLimit();
+        assertTrue(basketWeaving101.getEnrollmentLimit()==0);
+    }
+
+    @Test
+    public void zeroFunctionsAsNoLimitMarker(){
+        basketWeaving101.removeEnrollmentLimit();
+        assertTrue(basketWeaving101.getEnrollmentLimit() == 0);
+        assertTrue(basketWeaving101.enrollIn(fred));
+        assertTrue(basketWeaving101.enrollIn(sally));
+    }
+
+    @Test
+    public void courseLimitInitializedToZero(){
+        assertTrue(syntax.getEnrollmentLimit()==0);
     }
 
     // ------ Drop courses ------
@@ -212,7 +232,7 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+                c.getStudents().size() <= c.getEnrollmentLimit() || c.getEnrollmentLimit()==0);
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(

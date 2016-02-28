@@ -19,7 +19,7 @@ public class Course {
     public Course(){
         enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
-        enrollmentLimit = 16;
+        enrollmentLimit = 0; // 0 is the no course limit marker
     }
 
     public void setCatalogNumber(String number){
@@ -34,9 +34,19 @@ public class Course {
         return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the enrollmentLimit
-        if (enrolledStudents.size() == 0){
+    public void removeEnrollmentLimit(){
+        enrollmentLimit = 0;
+    }
+
+    /**
+     * setEnrollmentLimit was designed for teachers wishing to raise an enrollment limit.
+     * If instructors wish to lower the limit below the number of currently enrolled students,
+     * It is the instructors prerogative to remove students before lowering the limit.
+     * @param limit
+     */
+
+    public boolean setEnrollmentLimit(int limit) {
+        if (this.enrolledStudents.size()<limit) {
             this.enrollmentLimit = limit;
             return true;
         }
@@ -55,7 +65,7 @@ public class Course {
         if (enrolledStudents.contains(student)){
             return true;
         }
-        else if (enrolledStudents.size() >= enrollmentLimit){
+        else if (enrolledStudents.size() >= enrollmentLimit && enrollmentLimit!=0){
             if (waitlist.contains(student)){
                 return false;
             }
