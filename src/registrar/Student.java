@@ -6,18 +6,15 @@ import java.util.Set;
 
 /**
  * Created by bjackson on 2/21/2016.
+ * Manages set of classes a student in enrolled in.
  */
 public class Student {
 
-    private String name;
-    private Set<Course> courses;
+    public String name;
+    public Set<Course> enrolledCourses;
 
     public Student(){
-        courses = new HashSet<>();
-    }
-
-    public String getName() {
-        return name;
+        enrolledCourses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -25,36 +22,24 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return Collections.unmodifiableSet(courses);
+        return Collections.unmodifiableSet(enrolledCourses);
     }
 
-    public boolean enrollIn(Course course) {
-        if (course.enroll(this)) {
-            courses.add(course);
+    /*
+     * Tries to enroll student in course, adds to enrolledCourses and returns true if successful.
+     */
+    public boolean enrollIn(Course course){
+        if(course.enroll(this)) {
+            enrolledCourses.add(course);
             return true;
         }
-        else {
-            return false;
-        }
+        else return false;
     }
 
-    public void drop(Course course) {
-        courses.remove(course);
+    public void drop(Course course){
+        if (enrolledCourses.contains(course)) {
+            enrolledCourses.remove(course);
+        }
         course.dropStudent(this);
     }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
 }
-
-
-
-
-
-
-
-
-
-
