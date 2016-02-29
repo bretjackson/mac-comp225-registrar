@@ -3,15 +3,10 @@ package registar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import registrar.Course;
 import registrar.Student;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -122,6 +117,27 @@ public class RegistrarTest {
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
+    }
+
+    @Test
+    public void removeEnrollmentLimit() {
+        basketWeaving101.removeEnrollmentLimit();
+        assertEquals(Integer.MAX_VALUE, basketWeaving101.getEnrollmentLimit());
+    }
+
+    @Test
+    public void changeEnrollmentLimit() {
+        assertTrue(basketWeaving101.setEnrollmentLimit(20));
+    }
+
+    @Test
+    public void changeEnrollLimitAddStudents() {
+        assertTrue(basketWeaving101.setEnrollmentLimit(1));
+        fred.enrollIn(basketWeaving101);
+        assertFalse(sally.enrollIn(basketWeaving101));
+        assertTrue(basketWeaving101.setEnrollmentLimit(4));
+        assertTrue(sally.enrollIn(basketWeaving101));
+        assertTrue(basketWeaving101.getWaitList().remove(sally));
     }
 
     // ------ Drop courses ------
