@@ -261,7 +261,7 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getStudents().size() + " students",
-                (!c.hasEnrollmentLimit()) || c.getStudents().size() <= c.getEnrollmentLimit());
+                c.getStudents().size() <= c.getEnrollmentLimit());
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(
