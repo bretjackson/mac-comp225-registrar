@@ -1,4 +1,4 @@
-package registar;
+package registrar;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,6 +42,33 @@ public class RegistrarTest {
 
     // ------ Enrolling ------
 
+    @Test  //making sure no student is on waitlist since there's no enrollment limit by default
+    public void waitlistIsAlwaysEmptyIfNoEnrollmentLimitIsEmposed() {
+    	factory.enrollMultipleStudents(math6, 9999);
+    	factory.enrollMultipleStudents(basketWeaving101, 9999);
+    	assertEquals(Collections.emptyList(), math6.getWaitList());
+    	assertEquals(Collections.emptyList(), basketWeaving101.getWaitList());
+    }    
+    
+    @Test  //tests if enrollment limit can be removed when students are enrolled in the course
+    public void canChangeEnrollmentLimitWhenStudentsAreEnrolled() {
+    	sally.enrollIn(comp225);
+    	fred.enrollIn(comp225);
+    	zongo.enrollIn(comp225);
+    	comp225.removeEnrollmentLimit();
+    	assertEquals(Double.POSITIVE_INFINITY, comp225.getEnrollmentLimit(), 0.0);
+    }
+    
+    @Test //tests whether students from waitlist are automatically enrolled when enrollment limit is removed
+    public void removingEnrollmentLimitEnrollsWaitlistStudents() {
+    	math6.setEnrollmentLimit(1);
+    	factory.enrollMultipleStudents(math6, 100);
+    	math6.removeEnrollmentLimit();
+    	assertEquals(Double.POSITIVE_INFINITY, math6.getEnrollmentLimit(), 0.0);  //enrollment limit removed?
+    	assertEquals(Collections.emptyList(), math6.getWaitList());  //waitlist empty?
+    	assertEquals(100, math6.getStudents().size());  //all the students in waitlist are enrolled?
+    }
+
     @Test
     public void studentStartsInNoCourses() {
         assertEquals(Collections.emptySet(), sally.getCourses());
@@ -68,7 +95,7 @@ public class RegistrarTest {
     @Test
     public void coursesHaveEnrollmentLimits() {
         comp225.setEnrollmentLimit(16);
-        assertEquals(16, comp225.getEnrollmentLimit());
+        assertEquals(16, comp225.getEnrollmentLimit(), 0.0);
     }
 
     @Test
@@ -117,12 +144,16 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
+    /*
     @Test
+    //this test not needed since enrollment limit can change anytime now.
+    
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
     }
+    */
 
 
     @Test(expected = UnsupportedOperationException.class)

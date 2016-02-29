@@ -17,8 +17,17 @@ public class Course {
     private List<Student> waitlist = new ArrayList<>();
     private String catalogNumber;
     private String title;
-    private int enrollmentLimit = 16;
-
+    private double enrollmentLimit = Double.POSITIVE_INFINITY;  //There's no enrollment limit by default
+    
+    public void removeEnrollmentLimit() {
+    	if (enrollmentLimit != Double.POSITIVE_INFINITY) {
+    		enrollmentLimit = Double.POSITIVE_INFINITY;
+    		while (!this.waitlist.isEmpty()) {
+    			enrollNextFromWaitlist();
+    		}	
+    	}
+    }
+    
     public String getCatalogNumber() {
         return catalogNumber;
     }
@@ -39,20 +48,14 @@ public class Course {
         this.title = title;
     }
 
-    public int getEnrollmentLimit() {
+    public double getEnrollmentLimit() {
         return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit) {
+    public boolean setEnrollmentLimit(double limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("course cannot have negative enrollment limit: " + limit);
         }
-
-        //If students are enrolled you can't change the limit
-        if (!roster.isEmpty()) {
-            return false;   // Consider making this IllegalStateException instead of boolean return val
-        }
-
         this.enrollmentLimit = limit;
         return true;
     }
