@@ -26,7 +26,7 @@ public class RegistrarTest {
     @Before
     public void createStudents() {
         sally = factory.makeStudent("Sally");
-        fred  = factory.makeStudent("Fred");
+        fred = factory.makeStudent("Fred");
         zongo = factory.makeStudent("Zongo Jr.");
     }
 
@@ -66,7 +66,7 @@ public class RegistrarTest {
     // ------ Enrollment limits ------
 
     @Test
-    public void coursesHaveEnrollmentLimits() {
+    public void coursesCanHaveEnrollmentLimits() {
         comp225.setEnrollmentLimit(16);
         assertEquals(16, comp225.getEnrollmentLimit());
     }
@@ -118,11 +118,50 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+    public void canChangeEnrollmentLimitOnceStudentsRegister() {
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
     }
+
+    //Added tests below to check that default enrollment limit is unlimited,
+    // enrollment limit can be removed, enrollment limit can be removed after
+    // students register and limit cannot be set to be less than the class size.
+    @Test
+    public void defaultEnrollmentLimitIsUnlimited () {
+        assertEquals(math6.getEnrollmentLimit(), Integer.MAX_VALUE);
+    }
+    @Test
+    public void canRemoveEnrollmentLimit() {
+        assertTrue(math6.setEnrollmentLimit(10));
+        math6.removeEnrollmentLimit();
+        assertEquals(Integer.MAX_VALUE, math6.getEnrollmentLimit());
+    }
+
+    @Test
+    public void canRemoveEnrollmentLimitAfterStudentsRegister() {
+        assertTrue(math6.setEnrollmentLimit(2));
+        sally.enrollIn(math6);
+        zongo.enrollIn(math6);
+        //Class is full.
+        assertTrue(math6.isFull());
+        //Make class have unlimited enrollment.
+        math6.removeEnrollmentLimit();
+        fred.enrollIn(math6);
+        assertFalse(math6.isFull());
+        assertEquals(Integer.MAX_VALUE, math6.getEnrollmentLimit());
+    }
+
+    @Test
+    public void cannotMakeLimitLessThanCurrentRosterSize() {
+        assertTrue(basketWeaving101.setEnrollmentLimit(4));
+        sally.enrollIn(basketWeaving101);
+        zongo.enrollIn(basketWeaving101);
+        assertFalse(basketWeaving101.isFull());
+        assertFalse(basketWeaving101.setEnrollmentLimit(1));
+        assertFalse(basketWeaving101.isFull());
+    }
+
 
     // ------ Drop courses ------
 

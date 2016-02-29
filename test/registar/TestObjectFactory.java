@@ -25,7 +25,7 @@ public class TestObjectFactory {
     public Course makeCourse(String catalogNumber, String title) {
         Course c = new Course();
         c.setCatalogNumber(catalogNumber);
-        c.setTitle(title);
+        c.setCourseTitle(title);
         courses.add(c);
         return c;
     }
