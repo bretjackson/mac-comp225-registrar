@@ -72,6 +72,27 @@ public class RegistrarTest {
     }
 
     @Test
+    public void canRemoveEnrollmentLimit() {
+        comp225.setEnrollmentLimit(2);
+        comp225.removeEnrollmentLimit();
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        assertEquals(3, comp225.getStudents().size());
+    }
+
+    @Test
+    public void noLimitNoWaitlist(){
+        comp225.setEnrollmentLimit(2);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        comp225.removeEnrollmentLimit();
+        assertEquals(3,comp225.getStudents().size());
+        assertEquals(0, comp225.getWaitList().size());
+    }
+
+    @Test
     public void enrollingUpToLimitAllowed() {
         factory.enrollMultipleStudents(comp225, 15);
         assertTrue(sally.enrollIn(comp225));
