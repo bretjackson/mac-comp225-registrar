@@ -72,8 +72,17 @@ public class RegistrarTest {
     }
 
     @Test
+    public void EnrollmentLimitsRemovalAllowed() {
+        comp225.setEnrollmentLimit(16);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit()+4);
+        comp225.removeEnrollmentLimit();
+        assertFalse(comp225.isFull());
+
+    }
+
+    @Test
     public void enrollingUpToLimitAllowed() {
-        factory.enrollMultipleStudents(comp225, 15);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit()-1);
         assertTrue(sally.enrollIn(comp225));
         assertEquals(list(), comp225.getWaitList());
         assertTrue(comp225.getStudents().contains(sally));
@@ -81,7 +90,7 @@ public class RegistrarTest {
 
     @Test
     public void enrollingPastLimitPushesToWaitList() {
-        factory.enrollMultipleStudents(comp225, 16);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit());
         assertFalse(sally.enrollIn(comp225));
         assertEquals(list(sally), comp225.getWaitList());
         assertFalse(comp225.getStudents().contains(sally));
@@ -89,7 +98,7 @@ public class RegistrarTest {
 
     @Test
     public void waitListPreservesEnrollmentOrder() {
-        factory.enrollMultipleStudents(comp225, 16);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit());
         sally.enrollIn(comp225);
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
@@ -99,7 +108,7 @@ public class RegistrarTest {
     @Test
     public void doubleEnrollingInFullCourseHasNoEffect() {
         sally.enrollIn(comp225);
-        factory.enrollMultipleStudents(comp225, 20);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit()+4);
         assertTrue(sally.enrollIn(comp225)); // full now, but Sally was already enrolled
         assertTrue(comp225.getStudents().contains(sally));
         assertFalse(comp225.getWaitList().contains(sally));
@@ -107,7 +116,7 @@ public class RegistrarTest {
 
     @Test
     public void doubleEnrollingAfterWaitListedHasNoEffect() {
-        factory.enrollMultipleStudents(comp225, 16);
+        factory.enrollMultipleStudents(comp225, comp225.getEnrollmentLimit());
         sally.enrollIn(comp225);
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
@@ -116,13 +125,14 @@ public class RegistrarTest {
 
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
-
+/*
     @Test
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
     }
+    */
 
     // ------ Drop courses ------
 
