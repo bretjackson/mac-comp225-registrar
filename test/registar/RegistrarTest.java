@@ -117,13 +117,14 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
+    /** Not needed anymore, because limit can be changed anytime
     @Test
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
     }
-
+    **/
 
     @Test(expected = UnsupportedOperationException.class)
     public void studentCoursesGetterReturnsImmutable() {
@@ -161,7 +162,9 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
+        System.out.println(comp225.getWaitList());
         fred.drop(comp225);
+        System.out.println(comp225.getWaitList());
         assertEquals(list(sally, zongo), comp225.getWaitList());
     }
 
@@ -175,6 +178,24 @@ public class RegistrarTest {
         assertTrue(comp225.getStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
     }
+
+    @Test
+    public void checkWaitlistEmptyAfterLimitRemoval(){
+        comp225.setEnrollmentLimit(5);
+        factory.enrollMultipleStudents(comp225, 15);
+        comp225.removeEnrollmentLimit();
+        assertTrue(comp225.getWaitList().size() == 0);
+    }
+
+    @Test
+    public void canSetLimitAfterEnrollment(){
+        comp225.setEnrollmentLimit(5);
+        factory.enrollMultipleStudents(comp225, 10);
+        comp225.setEnrollmentLimit(10);
+        assertEquals(comp225.getEnrollmentLimit(), 10);
+    }
+
+
 
     // ------ Post-test invariant check ------
     //
@@ -223,7 +244,7 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+                c.getStudents().size() <= c.getEnrollmentLimit() || !c.hasLimit());
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(
