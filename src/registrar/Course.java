@@ -50,11 +50,18 @@ public class Course {
 
         //If students are enrolled you can't change the limit
         if (!roster.isEmpty()) {
-            return false;   // Consider making this IllegalStateException instead of boolean return val
+            return false;
         }
 
         this.enrollmentLimit = limit;
         return true;
+    }
+
+    public void removeEnrollmentLimit() {
+        this.enrollmentLimit = Integer.MAX_VALUE;
+        while(roster.size() < enrollmentLimit && waitlist.size() > 0){
+            waitlist.remove(0).enrollIn(this);
+        }
     }
 
     public Set<Student> getStudents() {
