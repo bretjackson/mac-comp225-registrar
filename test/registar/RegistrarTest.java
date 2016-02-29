@@ -117,11 +117,30 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
+    /*@Test
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
+    }*/
+
+    @Test
+    public void canChangeEnrollmentLimitOnceStudentsRegister() {
+        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+        fred.enrollIn(basketWeaving101);
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
+    }
+
+    @Test
+    public void enrollmentLimitRemoved() {
+        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+        basketWeaving101.removeEnrollmentLimit();
+        assertTrue(basketWeaving101.getEnrollmentLimit()==Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void initialEnrollmentLimitAtMAX(){
+        assertTrue(basketWeaving101.getEnrollmentLimit()==Integer.MAX_VALUE);
     }
 
     // ------ Drop courses ------

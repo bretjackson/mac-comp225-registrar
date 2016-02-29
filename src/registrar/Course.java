@@ -19,7 +19,7 @@ public class Course {
     public Course(){
         enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        limit = Integer.MAX_VALUE;
     }
 
     public void setCatalogNumber(String number){
@@ -35,16 +35,15 @@ public class Course {
     }
 
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledStudents.size() == 0){
+        if (this.limit != limit) {
             this.limit = limit;
             return true;
         }
-        //You shouldn't be able to pass in a limit less than or equal to zero.
-        if (limit <= 0){
-            return false;
-        }
-        return false;
+        return true;
+    }
+
+    public void removeEnrollmentLimit(){
+        this.limit = Integer.MAX_VALUE;
     }
 
     public Set<Student> getStudents(){
