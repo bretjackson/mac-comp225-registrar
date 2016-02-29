@@ -53,7 +53,7 @@ public class Course {
             return false;   // Consider making this IllegalStateException instead of boolean return val
         }
 
-        this.enrollmentLimit = limit;
+        //this.enrollmentLimit = limit;
         return true;
     }
 
@@ -69,8 +69,11 @@ public class Course {
         if (roster.contains(student)) {
             return true;
         }
-        if (isFull()) {
-            addToWaitlist(student);
+        //if (isFull()) {
+        if (!waitlist.isEmpty()){
+            //addToWaitlist(student);
+            waitlist.remove(student);
+            roster.add(student);
             return false;
         }
         roster.add(student);
@@ -98,6 +101,17 @@ public class Course {
         if (roster.remove(student)) {
             enrollNextFromWaitlist();
         }
+    }
+
+    public void removeEnrollmentLimit(int limit){
+        if(setEnrollmentLimit(limit)){
+            enrollmentLimit++;
+        }
+        //else{
+            //enrollmentLimit++;
+        //}
+        //modify the implemention of other methods to implement the other new features
+        // (unlimited default enrollments, modifiable limits at any time)
     }
 
     @Override
