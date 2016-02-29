@@ -117,12 +117,12 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -163,6 +163,18 @@ public class RegistrarTest {
         sally.drop(comp225);
         assertTrue(comp225.getStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
+    }
+
+    @Test
+    public void checkIfLimitIsModifiable() {
+        sally.enrollIn(comp225);
+        assertTrue(comp225.getStudents().contains(sally));
+        comp225.removeEnrollmentLimit();
+        assertEquals(comp225.getStudents().size(), comp225.getEnrollmentLimit());
+        zongo.enrollIn(comp225);
+        assertEquals(comp225.getStudents().size(), comp225.getEnrollmentLimit());
+        comp225.setEnrollmentLimit(15);
+        assertTrue(comp225.getEnrollmentLimit()==15);
     }
 
     // ------ Post-test invariant check ------
