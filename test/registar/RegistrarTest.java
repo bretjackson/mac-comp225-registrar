@@ -131,6 +131,28 @@ public class RegistrarTest {
         assertFalse(basketWeaving101.setEnrollmentLimit(1));
     }
 
+    @Test
+    public void canMakeEnrollmentUnlimited() {
+        basketWeaving101.setEnrollmentLimit(-5);
+        assertEquals(-1, basketWeaving101.getEnrollmentLimit());
+        assertTrue(basketWeaving101.spaceAvailable());
+    }
+
+    @Test
+    public void addsStudentsFromWaitlistIfCourseHasSpace() {
+        basketWeaving101.setEnrollmentLimit(1);
+        sally.enrollInCourse(basketWeaving101);
+        fred.enrollInCourse(basketWeaving101);
+        zongo.enrollInCourse(basketWeaving101);
+        assertFalse(basketWeaving101.spaceAvailable());
+        assertEquals(1, basketWeaving101.getEnrolledStudents().size());
+        assertEquals(2, basketWeaving101.getWaitList().size());
+        basketWeaving101.setEnrollmentLimit(-1);
+        assertTrue(basketWeaving101.spaceAvailable());
+        assertEquals(3, basketWeaving101.getEnrolledStudents().size());
+        assertEquals(0, basketWeaving101.getWaitList().size());
+    }
+
     // ------ Drop courses ------
 
     @Test
@@ -219,7 +241,7 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getEnrolledStudents().size() + " students",
-                c.getEnrolledStudents().size() <= c.getEnrollmentLimit());
+                (c.getEnrolledStudents().size() <= c.getEnrollmentLimit()) || c.getEnrollmentLimit() == -1);
 
         if(c.getEnrolledStudents().size() < c.getEnrollmentLimit())
             assertEquals(

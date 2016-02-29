@@ -35,9 +35,17 @@ public class Course {
     }
 
     public boolean setEnrollmentLimit(int limit) {
-        //If students are enrolled you can't change the enrollLimit
+        // Set the enrollment limit to -1 if it's unlimited enrollment
+        if (limit < 0) {
+            this.enrollLimit = -1;
+            checkWaitlist();
+            return true;
+        }
+
+        // You can't make the enrollment limit less than the number of students enrolled
         if (enrolledStudents.size() <= limit) {
             this.enrollLimit = limit;
+            checkWaitlist();
             return true;
         }
         return false;
@@ -49,7 +57,7 @@ public class Course {
      * @return - true if there is still space for someone to enroll in the course
      */
     public boolean spaceAvailable() {
-        return enrollLimit > enrolledStudents.size();
+        return enrollLimit == -1 || enrollLimit > enrolledStudents.size();
     }
 
     public Set<Student> getEnrolledStudents() {
@@ -109,12 +117,11 @@ public class Course {
             return;
         }
 
-        // Add first student on the waitlist to the course
-        if (waitlist.size() > 0) {
+        // For every spot left in the class, add a student from the waitlist
+        while (spaceAvailable() && waitlist.size() > 0) {
             Student nextStudent = waitlist.remove(0);
             enrolledStudents.add(nextStudent);
             nextStudent.enrollStudent(this);
         }
     }
-
 }
