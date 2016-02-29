@@ -1,65 +1,69 @@
 package registrar;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bjackson on 2/21/2016.
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
-    private List<Student> waitlist;
-    private String number;
-    private String name;
-    private int limit;
-
-    public Course(){
-        enrolledIn = new HashSet<>();
-        waitlist = new ArrayList<>();
-        limit = 16;
-    }
+    private Set<Student> roster = new HashSet<>();
+    private List<Student> waitlist = new ArrayList<>();
+    private String catalogNumber;
+    private String title;
+    private int enrollLimit = 16;
 
     public void setCatalogNumber(String number){
-        this.number = number;
+        this.catalogNumber = number;
     }
 
     public void setTitle(String title){
-        this.name = title;
+        if(title == null) {
+            throw new IllegalArgumentException("course title cannot be null");
+        }
+        this.title = title;
     }
 
     public int getEnrollmentLimit(){
-        return limit;
+        return enrollLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
-            this.limit = limit;
-            return true;
+    public void setEnrollmentLimit(int limit){
+        if (limit < 0) {
+            throw new IllegalArgumentException("course cannot have negative enrollment limit: " + limit);
         }
-        return false;
+        this.enrollLimit = limit;
+    }
+
+    public void removeEnrollmentLimit(){
+        //Add a big number that is out of any possible class size to roster size
+        int inf = 1000000000;
+        this.enrollLimit = roster.size() + inf;
+    }
+
+    public void fixOverEnrollmentFromRemoveEnrollmentLimit(){
+        if (enrollLimit < roster.size()){
+            throw new IllegalArgumentException("Fix enrollment limit or remove students: roster size is larger than enroll limit");
+        }
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return Collections.unmodifiableSet(roster);
     }
 
     public List<Student> getWaitList(){
-        return waitlist;
+        return Collections.unmodifiableList(waitlist);
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    public boolean enrollStudent(Student s){
+        if (roster.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
+        if (roster.size() >= enrollLimit){
             putOnWaitlist(s);
             return false;
         }
-        enrolledIn.add(s);
+        roster.add(s);
         return true;
     }
 
@@ -77,8 +81,8 @@ public class Course {
     }
 
     public void removeStudentEnrollWaitListed(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
+        if (roster.contains(s)) {
+            roster.remove(s);
             if(waitlist.size()>0){
                 Student toEnroll = waitlist.remove(0);
                 enrollWaitListed(toEnroll);
@@ -87,7 +91,7 @@ public class Course {
     }
 
     public void enrollWaitListed(Student s){
-        s.enrollIn(this);
+        s.enrollInCourse(this);
     }
 
     public void removeStudentWaitList(Student s){
