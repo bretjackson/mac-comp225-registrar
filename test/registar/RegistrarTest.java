@@ -49,7 +49,7 @@ public class RegistrarTest {
         assertFalse(basketWeaving101.getHasEnrollementLimit());
     }
 
-//    @Test apparently the code already did this...
+//    @Test apparently the code already did this....
 //    public void studentsFromWaitListMovedOverWhenEnrollmentLimitRemoved(){
 //        factory.enrollMultipleStudents(comp225, 16);
 //        sally.enrollIn(comp225);
