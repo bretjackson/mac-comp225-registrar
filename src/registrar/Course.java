@@ -14,12 +14,14 @@ public class Course {
     private List<Student> studentsInWaitlist;//Students on a waitlist for the class
     private String courseIdNumber;
     private String courseIdName;
-    private int enrolementLimit;//Max amount of students a class can hold
+    private boolean hasEnrollementLimit;//If a course has an enrollment limit or not
+    private int enrollmentLimit;//Max amount of students a class can hold
 
     public Course(){
         studentsEnrolledInClass = new HashSet<>();
         studentsInWaitlist = new ArrayList<>();
-        enrolementLimit = 16;
+        hasEnrollementLimit = false;
+        enrollmentLimit = 1000000;//1000000 is a place holder number. Be default, classes have no enrollment limit. The placeholder is then replaced when an enrollment limit is set.
     }//Course object
 
     /**
@@ -30,21 +32,16 @@ public class Course {
     public boolean enrollIn(Student student){
         if (studentsEnrolledInClass.contains(student)){
             return true;
-        }
-        else if (studentsEnrolledInClass.size() >= enrolementLimit){//If the class is at or over capacity
-            if (studentsInWaitlist.contains(student)){//If the student is already in the waitlist
+        }else if(hasEnrollementLimit&&(studentsEnrolledInClass.size() >= enrollmentLimit)) {//If there is a enrollment limit and the class is at or over capacity
+            if (studentsInWaitlist.contains(student)) {//If the student is already in the waitlist
                 return false;
-            }
-            else{
+            } else {
                 studentsInWaitlist.add(student);//add student to waitlist
                 return false;
             }
         }
-        else{
-            studentsEnrolledInClass.add(student);
-            return true;
-        }
-
+        studentsEnrolledInClass.add(student);
+        return true;
     }
 
     /**
@@ -68,20 +65,38 @@ public class Course {
     /**
      * Sets the enrollment limit for a class
      * @param limit an int which signifies how many students the class can hold
-     * @return returns true or false if the class is empty. True is empty
+     * @return returns true if it can expand the class, false if it cannot
      */
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the enrolementLimit
-        if (studentsEnrolledInClass.size() == 0){
-            this.enrolementLimit = limit;
+        //If students are enrolled you can't change the enrollmentLimit
+        if(studentsEnrolledInClass.size()<limit){
+            this.enrollmentLimit = limit;
+            this.hasEnrollementLimit = true;
             return true;
         }
         return false;
+
+    }
+
+    /**
+     * This function removes the enrollment limit for a class and then takes all students in the waitlist and moves them into the class
+     */
+    public void removeEnrollmentLimit(){
+        this.hasEnrollementLimit = false;
+//        for (Student student:studentsInWaitlist){
+//            studentsInWaitlist.remove(student);apparently the code already does these?
+//            student.enrollIn(this);
+//            this.enrollIn(student);
+//        }
     }
 
     //Getters and Setters
+    public boolean getHasEnrollementLimit() {
+        return hasEnrollementLimit;
+    }
+
     public int getEnrollmentLimit(){
-        return enrolementLimit;
+        return enrollmentLimit;
     }
 
     public Set<Student> getStudents(){

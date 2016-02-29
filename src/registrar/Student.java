@@ -10,7 +10,6 @@ public class Student {
 
     private String studentName;
     public Set<Course> coursesEnrolledIn;
-
     public Student(){
         coursesEnrolledIn = new HashSet<>();
     }//Student Object

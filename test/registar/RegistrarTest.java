@@ -41,6 +41,25 @@ public class RegistrarTest {
     }
 
     // ------ Enrolling ------
+    @Test//Tests to make sure that removing the enrollment limit works
+    public void classCanRemoveEnrollmentLimit(){
+        basketWeaving101.setEnrollmentLimit(10);
+        assertTrue(basketWeaving101.getHasEnrollementLimit());
+        basketWeaving101.removeEnrollmentLimit();
+        assertFalse(basketWeaving101.getHasEnrollementLimit());
+    }
+
+//    @Test apparently the code already did this...
+//    public void studentsFromWaitListMovedOverWhenEnrollmentLimitRemoved(){
+//        factory.enrollMultipleStudents(comp225, 16);
+//        sally.enrollIn(comp225);
+//        fred.enrollIn(comp225);
+//        zongo.enrollIn(comp225);
+//        comp225.removeEnrollmentLimit();
+//        Set<Student> students = comp225.getStudents();
+//        System.out.print(students);
+//        assertEquals(19, students.size());
+//    }
 
     @Test
     public void studentStartsInNoCourses() {
@@ -118,10 +137,10 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+    public void canChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
     }
 
     // ------ Drop courses ------
