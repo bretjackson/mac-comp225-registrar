@@ -184,57 +184,52 @@ public class RegistrarTest {
 
     @After
     public void checkInvariants() {
-        for(Student student : factory.allStudents())
-            checkStudentInvariants(student);
-        for(Course course : factory.allCourses())
-            checkCourseInvariants(course);
+        for(Student s : factory.allStudents())
+            checkStudentInvariants(s);
+        for(Course c : factory.allCourses())
+            checkCourseInvariants(c);
     }
 
-    private void checkStudentInvariants(Student student) {
-        for(Course course : student.getCourses())
+    private void checkStudentInvariants(Student s) {
+        for(Course c : s.getCourses())
             assertTrue(
-                    student + " is enrolled in " + course + ", because " + student.enroll() + " has them in the list of students",
-                    course.getStudents().contains(student));
+                    s + " thinks they are enrolled in " + c + ", but " + c + " does not have them in the list of students",
+                    c.getStudents().contains(s));
     }
 
-    private void checkCourseInvariants(Course course) {
-        Set<Student> waitListUnique = new HashSet<Student>(course.getWaitList());
+    private void checkCourseInvariants(Course c) {
+        Set<Student> waitListUnique = new HashSet<Student>(c.getWaitList());
         assertEquals(
-                course + " wait list contains duplicates: " + course.getWaitList(),
+                c + " wait list contains duplicates: " + c.getWaitList(),
                 waitListUnique.size(),
-                course.getWaitList().size());
+                c.getWaitList().size());
 
-        waitListUnique.retainAll(course.getStudents());
+        waitListUnique.retainAll(c.getStudents());
         assertEquals(
-                course + " contains students who are both registered and waitlisted",
+                c + " contains students who are both registered and waitlisted",
                 Collections.emptySet(),
                 waitListUnique);
 
-        for(Student student : course.getStudents())
+        for(Student s : c.getStudents())
             assertTrue(
-                    course + " knows " + student + " is enrolled because " + student.enroll() + " is listed in the class",
-                    student.getCourses().contains(course));
+                    c + " thinks " + s + " is enrolled, but " + s + " doesn't think they're in the class",
+                    s.getCourses().contains(c));
 
-        for(Student student : course.getWaitList())
+        for(Student s : c.getWaitList())
             assertFalse(
-                    course + " lists " + student + " as waitlisted, because " + student.enroll() + " has them as waitlisted",
-                    student.getCourses().contains(course));
+                    c + " lists " + s + " as waitlisted, but " + s + " thinks they are enrolled",
+                    s.getCourses().contains(c));
 
         assertTrue(
-                course + " has an enrollment limit of " + course.getEnrollmentLimit()
-                        + ", but has " + course.getStudents().size() + " students",
-                course.getStudents().size() <= course.getEnrollmentLimit());
+                c + " has an enrollment limit of " + c.getEnrollmentLimit()
+                        + ", but has " + c.getStudents().size() + " students",
+                c.getStudents().size() <= c.getEnrollmentLimit());
 
-        if(course.getStudents().size() < course.getEnrollmentLimit())
+        if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(
-                    course + " is not full, and has no students waitlisted",
+                    c + " is not full, but has students waitlisted",
                     Collections.emptyList(),
-                    course.getWaitList());
-        else
-        assertEquals(
-                      course + " is full, and has students waitlisted",
-                      Collections.emptyList(),
-                      course.getWaitList());
+                    c.getWaitList());
     }
 
     // ------ Helpers ------

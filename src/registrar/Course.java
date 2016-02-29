@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -18,6 +19,8 @@ public class Course {
     private String catalogNumber;
     private String title;
     private int enrollmentLimit = 16;
+    Integer myInf = Integer.MAX_VALUE;
+    Scanner in = new Scanner(System.in);
 
     public String getCatalogNumber() {
         return catalogNumber;
@@ -50,10 +53,13 @@ public class Course {
 
         //If students are enrolled you can't change the limit
         if (!roster.isEmpty()) {
-            return false;   // Consider making this IllegalStateException instead of boolean return val
+            removeEnrollmentLimit();
+            throw new IllegalStateException("enter new enrollment limit");
+            // Consider making this IllegalStateException instead of boolean return val
         }
 
-        this.enrollmentLimit = limit;
+        System.out.println("Enter new limit: ");
+        this.enrollmentLimit = in.nextInt();
         return true;
     }
 
@@ -97,6 +103,12 @@ public class Course {
         waitlist.remove(student);
         if (roster.remove(student)) {
             enrollNextFromWaitlist();
+        }
+    }
+
+    public void removeEnrollmentLimit(){
+        if (setEnrollmentLimit(enrollmentLimit)){
+            enrollmentLimit = myInf;
         }
     }
 
