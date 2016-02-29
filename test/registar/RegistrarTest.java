@@ -20,7 +20,7 @@ public class RegistrarTest {
     // ------ Setup ------
 
     private TestObjectFactory factory = new TestObjectFactory();
-    private Course comp225, math6, basketWeaving101;
+    private Course comp225, math6, basketWeaving101, bio101, bio102, bio103;
     private Student sally, fred, zongo;
 
     @Before
@@ -38,6 +38,10 @@ public class RegistrarTest {
         math6 = factory.makeCourse("Math 6", "All About the Number Six");
 
         basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!");
+
+        bio101 = factory.makeCourse("Bio 101", "Biology and stuff");
+        bio102 = factory.makeCourse("Bio 102", "More Biology and stuff");
+        bio103 = factory.makeCourse("Bio 103", "Even More Biology and stuff");
     }
 
     // ------ Enrolling ------
@@ -68,7 +72,7 @@ public class RegistrarTest {
     @Test
     public void coursesHaveEnrollmentLimits() {
         comp225.setEnrollmentLimit(16);
-        assertEquals(16, comp225.getEnrollmentLimit());
+        assertTrue(16 == comp225.getEnrollmentLimit());
     }
 
     @Test
@@ -118,12 +122,46 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+    public void cannotChangeSetEnrollmentLimitBelowNumberEnrolled(){
+        assertTrue(basketWeaving101.setEnrollmentLimit(2));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        sally.enrollIn(basketWeaving101);
+        assertFalse(basketWeaving101.setEnrollmentLimit(1));
     }
 
+    @Test
+    public void canRemoveEnrollmentLimit() {
+        bio101.setEnrollmentLimit(2);
+        sally.enrollIn(bio101);
+        fred.enrollIn(bio101);
+        zongo.enrollIn(bio101);
+        bio101.removeEnrollmentLimit();
+        assertFalse(bio101.hasEnrollmentLimit());
+        assertTrue(bio101.getStudents().contains(zongo));
+
+    }
+
+    @Test
+    public void canChangeEnrollmentLimit() {
+        bio102.setEnrollmentLimit(1);
+        sally.enrollIn(bio102);
+        fred.enrollIn(bio102);
+        zongo.enrollIn(bio102);
+        bio102.setEnrollmentLimit(2);
+        assertTrue(2 == bio102.getEnrollmentLimit());
+        assertTrue(bio102.getStudents().contains(fred));
+        assertFalse(bio102.getStudents().contains(zongo));
+    }
+
+    @Test
+    public void cannotChangeEnrollmenLimitBelowEnrolled() {
+        bio103.setEnrollmentLimit(3);
+        sally.enrollIn(bio103);
+        fred.enrollIn(bio103);
+        zongo.enrollIn(bio103);
+        assertFalse(bio103.setEnrollmentLimit(2));
+        assertTrue(3 == bio103.getEnrollmentLimit());
+    }
 
     @Test(expected = UnsupportedOperationException.class)
     public void studentCoursesGetterReturnsImmutable() {
