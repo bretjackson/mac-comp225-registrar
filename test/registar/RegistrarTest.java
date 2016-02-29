@@ -117,12 +117,12 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -165,6 +165,27 @@ public class RegistrarTest {
         assertEquals(list(fred), comp225.getWaitList());
     }
 
+    @Test
+    public void defaultEnrollmentIsUnlimited() {
+        Course c = new Course();
+        assertTrue(c.getEnrollmentLimit() == -1);
+    }
+
+    @Test
+    public void removeEnrollmentLimitResetsToUnlimited() {
+        comp225.removeEnrollmentLimit();
+        assertTrue(comp225.getEnrollmentLimit() == -1);
+    }
+
+    @Test
+    public void recognizesNegOneAsUnlimited() {
+        comp225.removeEnrollmentLimit();
+        factory.enrollMultipleStudents(comp225, 1600);
+        sally.enrollIn(comp225);
+        assertTrue(sally.getCourses().contains(comp225));
+        assertTrue(comp225.getEnrolledStudents().contains(sally));
+    }
+
     // ------ Post-test invariant check ------
     //
     // This is a bit persnickety for day-to-day testing, but these kinds of checks are appropriate
@@ -199,26 +220,29 @@ public class RegistrarTest {
                 Collections.emptySet(),
                 waitListUnique);
 
-        for(Student s : c.getEnrolledStudents())
+        for (Student s : c.getEnrolledStudents())
             assertTrue(
                     c + " thinks " + s + " is enrolled, but " + s + " doesn't think they're in the class",
                     s.getCourses().contains(c));
 
-        for(Student s : c.getWaitList())
+        for (Student s : c.getWaitList())
             assertFalse(
                     c + " lists " + s + " as waitlisted, but " + s + " thinks they are enrolled",
                     s.getCourses().contains(c));
 
-        assertTrue(
-                c + " has an enrollment limit of " + c.getEnrollmentLimit()
-                        + ", but has " + c.getEnrolledStudents().size() + " students",
-                c.getEnrolledStudents().size() <= c.getEnrollmentLimit());
+        if (c.getEnrollmentLimit() != -1) {
 
-        if(c.getEnrolledStudents().size() < c.getEnrollmentLimit())
-            assertEquals(
-                    c + " is not full, but has students waitlisted",
-                    Collections.emptyList(),
-                    c.getWaitList());
+            assertTrue(
+                    c + " has an enrollment limit of " + c.getEnrollmentLimit()
+                            + ", but has " + c.getEnrolledStudents().size() + " students",
+                    c.getEnrolledStudents().size() <= c.getEnrollmentLimit());
+
+            if (c.getEnrolledStudents().size() < c.getEnrollmentLimit())
+                assertEquals(
+                        c + " is not full, but has students waitlisted",
+                        Collections.emptyList(),
+                        c.getWaitList());
+        }
     }
 
     // ------ Helpers ------

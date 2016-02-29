@@ -19,12 +19,24 @@ public class Course {
     public Course(){
         studentsEnrolled = new HashSet<>();
         waitlist = new ArrayList<>();
-        enrollmentLimit = 16;
+        //-1 identifies unlimited enrollment and constructor sets it as default
+        enrollmentLimit = -1;
+    }
+
+    public String getCatalogNumber() {
+        return catalogNumber;
     }
 
     public void setCatalogNumber(String number){ this.catalogNumber = number; }
 
+    public String getTitle() {
+        return title;
+    }
+
     public void setTitle(String title){
+        if(title == null) {
+            throw new IllegalArgumentException("title cannot be null");
+        }
         this.title = title;
     }
 
@@ -33,12 +45,8 @@ public class Course {
     }
 
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (studentsEnrolled.isEmpty()) {
-            this.enrollmentLimit = limit;
-            return true;
-        }
-        return false;
+        this.enrollmentLimit = limit;
+        return true;
     }
 
     public Set<Student> getEnrolledStudents(){
@@ -53,7 +61,8 @@ public class Course {
         if (studentsEnrolled.contains(s)){
             return true;
         }
-        if (studentsEnrolled.size() >= enrollmentLimit){
+        //checks that class is not at full enrollment AND class does not have unlimited enrollment
+        if (studentsEnrolled.size() >= enrollmentLimit && enrollmentLimit != -1){
             if (waitlist.contains(s)){
                 return false;
             }
@@ -65,21 +74,19 @@ public class Course {
     }
 
     public void dropStudent(Student s){
-        if (studentsEnrolled.contains(s)) {
-            studentsEnrolled.remove(s);
+        if (studentsEnrolled.remove(s)) {
             if (waitlist.size() > 0) {
                 Student toEnroll = waitlist.remove(0);
                 studentsEnrolled.add(toEnroll);
-                toEnroll.coursesEnrolled.add(this);
+                toEnroll.enrollIn(this);
             }
         }
-        // removes s from waitlist if he/she is on waitlist
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
-        }
-        else if (!(studentsEnrolled.contains(s)) && !(waitlist.contains(s))) {
-            System.out.println("Student " + s + " not enrolled in course or on waitlist");
-        }
+        waitlist.remove(s);
+    }
+
+    public void removeEnrollmentLimit(){
+        //identifies unlimited enrollment by -1
+        this.enrollmentLimit = -1;
     }
 
 }

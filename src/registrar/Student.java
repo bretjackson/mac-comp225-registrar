@@ -1,5 +1,6 @@
 package registrar;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,8 +10,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> coursesEnrolled;
+    private String name;
+    private Set<Course> coursesEnrolled;
 
     public Student(){
         coursesEnrolled = new HashSet<>();
@@ -21,12 +22,12 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return coursesEnrolled;
+        return Collections.unmodifiableSet(coursesEnrolled);
     }
 
-    public boolean enrollIn(Course c){
-        if(c.enrolled(this)) {
-            coursesEnrolled.add(c);
+    public boolean enrollIn(Course course){
+        if(course.enrolled(this)) {
+            coursesEnrolled.add(course);
             return true;
         }
         else {
