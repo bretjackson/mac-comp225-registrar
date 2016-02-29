@@ -117,11 +117,39 @@ public class RegistrarTest {
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+    public void canChangeEnrollmentLimitOnceStudentsRegistar(){
+        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+        fred.enrollIn((basketWeaving101));
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
+    }
+
+    @Test
+    public void cannotChangeEnrollmentLimitToLowerThanEnrollmentCount(){
+        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+        fred.enrollIn((basketWeaving101));
+        assertFalse(basketWeaving101.setEnrollmentLimit(0));
+    }
+
+    @Test
+    public void canRemoveEnrollmentLimit(){
+        assertTrue(basketWeaving101.removeEnrollmentLimit());
+        for(Student s : factory.allStudents()){
+            assertTrue(s.enrollIn((basketWeaving101)));
+        }
+    }
+
+    @Test
+    public void canRemoveEnrollmentLimitAfterStudentsEnroll(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.removeEnrollmentLimit());
     }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -211,7 +239,7 @@ public class RegistrarTest {
         assertTrue(
                 c + " has an enrollment limit of " + c.getEnrollmentLimit()
                         + ", but has " + c.getStudents().size() + " students",
-                c.getStudents().size() <= c.getEnrollmentLimit());
+                (c.getStudents().size() <= c.getEnrollmentLimit() || c.getEnrollmentLimit() < 0));
 
         if(c.getStudents().size() < c.getEnrollmentLimit())
             assertEquals(

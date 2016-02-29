@@ -73,15 +73,19 @@ public class Course {
      */
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (limit <= enrolledIn.size()){ //Now it will let you change the limit if students are already enrolled, but not if the new limit is too low
+        if (limit <= enrolledIn.size() && !(limit < 0)){ //Now it will let you change the limit if students are already enrolled, but not if the new limit is too low
             return false;
         }
         this.limit = limit;
-        return false;
+        return true;
     }
 
-    public void removeEnrollmentLimit(){
-        setEnrollmentLimit(-1);
+    /**
+     * Removes the enrollment limit from a course
+     * @return I know it wasn't supposed to return anything, but it made testing much easier to return a success/fail boolean
+     */
+    public boolean removeEnrollmentLimit(){
+        return setEnrollmentLimit(-1);
     }
 
     /**
