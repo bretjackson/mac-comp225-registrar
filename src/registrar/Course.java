@@ -43,18 +43,16 @@ public class Course {
         return enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit) {
+    public void setEnrollmentLimit(int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("course cannot have negative enrollment limit: " + limit);
         }
 
-        //If students are enrolled you can't change the limit
-//        if (!roster.isEmpty()) {
-//            return false;   // Consider making this IllegalStateException instead of boolean return val
-//        }
+        if (roster.size() > limit) {
+            throw new IllegalStateException("Cannot set enrollment below class size");   // Consider making this IllegalStateException instead of boolean return val
+        }
 
         this.enrollmentLimit = limit;
-        return true;
     }
 
     public Set<Student> getStudents() {
@@ -69,7 +67,6 @@ public class Course {
         if (roster.contains(student)) {
             return true;
         }
-        removeEnrollmentLimit();
         if (isFull()) {
             addToWaitlist(student);
             return false;
@@ -99,11 +96,6 @@ public class Course {
         if (roster.remove(student)) {
             enrollNextFromWaitlist();
         }
-    }
-
-    public void removeEnrollmentLimit(){
-        //if there is a limit already set, you should be able to remove it to allow unlimited enrollment.
-        enrollmentLimit = roster.size()+1;
     }
 
     @Override

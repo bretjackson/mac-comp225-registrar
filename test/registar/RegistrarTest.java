@@ -54,6 +54,13 @@ public class RegistrarTest {
         assertEquals(set(sally), comp225.getStudents());
     }
 
+
+    @Test  (expected = IllegalStateException.class)
+    public void cannotLowerEnrollmentLimitBelowClassSize(){
+        factory.enrollMultipleStudents(comp225,8);
+        comp225.setEnrollmentLimit(7);
+    }
+
     @Test
     public void doubleEnrollingHasNoEffect() {
         sally.enrollIn(comp225);
@@ -80,11 +87,11 @@ public class RegistrarTest {
     }
 
     @Test
-    public void enrollingPastLimitDoesNotPushToWaitList() {
+    public void enrollingPastLimitPushesToWaitList() {
         factory.enrollMultipleStudents(comp225, 16);
-        assertTrue(sally.enrollIn(comp225));
-        assertEquals(list(), comp225.getWaitList());
-        assertTrue(comp225.getStudents().contains(sally));
+        assertFalse(sally.enrollIn(comp225));
+        assertEquals(list(sally), comp225.getWaitList());
+        assertFalse(comp225.getStudents().contains(sally));
     }
 
     @Test
@@ -93,7 +100,7 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
-        assertEquals(list(), comp225.getWaitList());
+        assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
     @Test
@@ -112,17 +119,17 @@ public class RegistrarTest {
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
         fred.enrollIn(comp225);
-        assertTrue(sally.enrollIn(comp225));
+        assertFalse(sally.enrollIn(comp225));
 
-        assertEquals(list(), comp225.getWaitList());
+        assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertTrue(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
 
     @Test(expected = UnsupportedOperationException.class)
@@ -162,7 +169,7 @@ public class RegistrarTest {
         fred.enrollIn(comp225);
         zongo.enrollIn(comp225);
         fred.drop(comp225);
-        assertEquals(list(), comp225.getWaitList());
+        assertEquals(list(sally, zongo), comp225.getWaitList());
     }
 
     @Test
@@ -173,16 +180,7 @@ public class RegistrarTest {
         fred.enrollIn(comp225);
         sally.drop(comp225);
         assertTrue(comp225.getStudents().contains(zongo));
-        assertEquals(list(), comp225.getWaitList());
-    }
-
-    @Test
-    public void checkRosterSizeAfterRemovingEnrollmentLimit() {
-        factory.enrollMultipleStudents(comp225, 16);
-        sally.enrollIn(comp225);
-        fred.enrollIn(comp225);
-        zongo.enrollIn(comp225);
-        assertEquals(19, comp225.getStudents().size());
+        assertEquals(list(fred), comp225.getWaitList());
     }
 
     // ------ Post-test invariant check ------
