@@ -126,7 +126,7 @@ public class RegistrarTest {
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
     }
 
 
