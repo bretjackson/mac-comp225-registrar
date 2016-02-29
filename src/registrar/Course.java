@@ -19,7 +19,6 @@ public class Course {
     public Course(){
         this.studentsEnrolled = new HashSet<>();
         this.waitlist = new ArrayList<>();
-        this.enrollLimit = 16;
     }
 
     public boolean enrollIn(Student s){
@@ -51,6 +50,10 @@ public class Course {
         }
     }
 
+    public void removeEnrollmentLimit() {
+        this.enrollLimit = Integer.MAX_VALUE;
+    }
+
     public String getCatalogNumber() {
         return catalogNumber;
     }
@@ -72,12 +75,8 @@ public class Course {
     }
 
     public boolean setEnrollmentLimit(int enrollLimit){
-        //If students are enrolled you can't change the enrollLimit
-        if (studentsEnrolled.size() == 0){
-            this.enrollLimit = enrollLimit;
-            return true;
-        }
-        return false;
+        this.enrollLimit = enrollLimit;
+        return true;
     }
 
     public Set<Student> getStudents(){
