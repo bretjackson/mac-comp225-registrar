@@ -34,13 +34,8 @@ public class Student {
     }
 
     public void drop(Course courseDrop){
-        if (enrolledIn.contains(courseDrop)) {
-            enrolledIn.remove(courseDrop);
-            courseDrop.dropStudent(this);
+        enrolledIn.remove(courseDrop);
+        courseDrop.dropStudent(this);
         }
-        //remove from waitlist
-        else if(courseDrop.getWaitList().contains(this)){
-            courseDrop.dropStudentFromWaitlist(this);
-        }
-    }
 }
+
