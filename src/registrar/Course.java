@@ -49,9 +49,9 @@ public class Course {
         }
 
         //If students are enrolled you can't change the limit
-        if (!roster.isEmpty()) {
-            return false;   // Consider making this IllegalStateException instead of boolean return val
-        }
+//        if (!roster.isEmpty()) {
+//            return false;   // Consider making this IllegalStateException instead of boolean return val
+//        }
 
         this.enrollmentLimit = limit;
         return true;
