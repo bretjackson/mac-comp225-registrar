@@ -14,7 +14,7 @@ public class Course {
 
     private Set<Student> classRoster;
     private List<Student> waitList;
-    private String number;
+    private String catalogNumber;
     private String title;
     private int limit;
 
@@ -25,7 +25,7 @@ public class Course {
     }
 
     public void setCatalogNumber(String number){
-        this.number = number;
+        this.catalogNumber = number;
     }
 
     public void setTitle(String title){
@@ -51,11 +51,23 @@ public class Course {
      * @return true if limit was changed and false if limit could not be changed
      */
     public boolean setEnrollmentLimit(int limit){
-        if (classRoster.size() == 0){
-            this.limit = limit;
-            return true;
+        this.limit = limit;
+        while((!waitList.isEmpty()) && classRoster.size() < limit){
+            addFromWaitList();
         }
-        return false;
+        return true;
+
+    }
+
+    /**
+     * Removes the enrollment limit of a course. Sets it to number that will not be reached by any school.
+     * Adds all students from wait list.
+     */
+    public void removeEnrollmentLimit(){
+        setEnrollmentLimit(100000);
+        while(!waitList.isEmpty()){
+           addFromWaitList();
+        }
     }
 
     /**
@@ -67,15 +79,50 @@ public class Course {
     public void dropStudent(Student student){
         if (classRoster.contains(student)) {
             classRoster.remove(student);
-            student.classSchedule.remove(this);
-            if (waitList.size() > 0) {
-                Student toEnroll = waitList.remove(0);
-                classRoster.add(toEnroll);
-                toEnroll.classSchedule.add(this);
-            }
+            student.dropCourse(this);
+            addFromWaitList();
         }
         else if (waitList.contains(student)){
             waitList.remove(student);
+        }
+    }
+
+
+    /**
+     * Enrolls a student in course
+     * @param student to be enrolled
+     * @return true if successfully enrolled. False if waitlisted
+     */
+    public boolean enrollStudent(Student student) {
+        if (classRoster.contains(student)) {
+            return true;
+        }
+        if (classRoster.size() > this.getEnrollmentLimit()) {
+            addToWaitlist(student);
+            return false;
+        }
+        classRoster.add(student);
+        return true;
+    }
+
+    /**
+     * Adds student to course from wait list.
+     */
+    private void addFromWaitList(){
+        if (waitList.size() > 0) {
+            Student toEnroll = waitList.remove(0);
+            classRoster.add(toEnroll);
+            toEnroll.enrollIn(this);
+        }
+    }
+
+    /**
+     * Adds student to wait list.
+     * @param student
+     */
+    private void addToWaitlist(Student student) {
+        if (!waitList.contains(student)) {
+            waitList.add(student);
         }
     }
 

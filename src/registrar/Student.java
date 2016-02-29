@@ -13,8 +13,8 @@ import java.util.Set;
  */
 public class Student {
 
-    public String name;
-    public Set<Course> classSchedule;
+    private String name;
+    private Set<Course> classSchedule;
 
     public Student(){
         classSchedule = new HashSet<>();
@@ -45,6 +45,7 @@ public class Student {
      */
     public boolean enrollIn(Course course){
         if (course.getRoster().contains(this)) {
+            classSchedule.add(course);
             return true;
         }
         else if (course.getRoster().size() < course.getEnrollmentLimit()) {

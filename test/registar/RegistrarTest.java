@@ -113,15 +113,48 @@ public class RegistrarTest {
         zongo.enrollIn(comp225);
         fred.enrollIn(comp225);
         assertFalse(sally.enrollIn(comp225));
-
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
     @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+    public void canChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.setEnrollmentLimit(18));
+    }
+
+    @Test
+    public void ifEnrollmentLimitMovedThenWaitlistedStudentsCanEnrollInClass(){
+        assertTrue(comp225.setEnrollmentLimit(10));
+        factory.enrollMultipleStudents(comp225, 10);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        assertTrue(comp225.setEnrollmentLimit(18));
+        assertTrue(comp225.getWaitList().isEmpty());
+    }
+
+    @Test
+    public void ifEnrollmentLimitMovedThenCorrectNumberOfWaitListedStudentsEnroll(){
+        assertTrue(comp225.setEnrollmentLimit(10));
+        factory.enrollMultipleStudents(comp225, 10);
+        sally.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        assertTrue(comp225.setEnrollmentLimit(12));
+        assertTrue(comp225.getWaitList().contains(fred));
+    }
+
+    @Test
+    public void removeEnrollmentLimitAllowsUnlimitedEnrollment(){
+        assertTrue(comp225.setEnrollmentLimit(10));
+        factory.enrollMultipleStudents(comp225, 10);
+        sally.enrollIn(comp225);
+        assertTrue(comp225.getWaitList().contains(sally));
+        comp225.removeEnrollmentLimit();
+        factory.enrollMultipleStudents(comp225, 100);
+        zongo.enrollIn(comp225);
+        assertTrue(comp225.getWaitList().isEmpty());
     }
 
     // ------ Drop courses ------
@@ -172,15 +205,6 @@ public class RegistrarTest {
         zongo.dropCourse(comp225);
         assertFalse(comp225.getRoster().contains(zongo));
         assertFalse(zongo.enrollIn(comp225));
-    }
-
-    @Test
-    public void courseDropsStudentChangeSchedule() {
-        sally.enrollIn(comp225);
-        factory.enrollMultipleStudents(comp225, 12);
-        assertTrue(sally.classSchedule.contains(comp225));
-        comp225.dropStudent(sally);
-        assertFalse(sally.classSchedule.contains(comp225));
     }
 
     // ------ Post-test invariant check ------
