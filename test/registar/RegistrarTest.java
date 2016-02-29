@@ -82,6 +82,16 @@ public class RegistrarTest {
     }
 
     @Test
+    public void noEnrollmentLimitAllowed(){
+        zongo.enrollIn(comp225);
+        factory.enrollMultipleStudents(comp225,20);
+        assertTrue(zongo.enrollIn(comp225));
+        assertTrue(comp225.getStudents().contains(zongo));
+        assertFalse(comp225.getWaitList().contains(zongo));
+    }
+
+
+    @Test
     public void enrollingPastLimitPushesToWaitList() {
         factory.enrollMultipleStudents(comp225, 16);
         assertFalse(sally.enrollIn(comp225));
@@ -124,6 +134,14 @@ public class RegistrarTest {
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
         assertFalse(basketWeaving101.setEnrollmentLimit(8));
+    }
+
+    @Test
+    public void canChangeEnrollmentLimitAtAnyTime(){
+        factory.enrollMultipleStudents(comp225,20);
+        assertTrue(basketWeaving101.setEnrollmentLimit(20));
+        zongo.enrollIn(basketWeaving101);
+        assertTrue(basketWeaving101.removeEnrollmentLimit());
     }
 
     // ------ Drop courses ------
@@ -222,6 +240,7 @@ public class RegistrarTest {
                     Collections.emptyList(),
                     c.getWaitList());
     }
+
 
     // ------ Helpers ------
 
