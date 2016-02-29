@@ -15,11 +15,12 @@ public class Course {
     private String id;
     private String name;
     private int capacity;
+    private boolean enrollmentLimitExists;
 
     public Course(){
         studentList = new HashSet<>();
         waitlist = new LinkedList<Student>();
-        capacity = 16;
+        enrollmentLimitExists = false;
     }
 
     public void setCatalogNumber(String id){
@@ -35,16 +36,18 @@ public class Course {
     public String getTitle(){ return name; }
 
     public int getEnrollmentLimit(){
-        return capacity;
+        if (getEnrollmentLimitExists()) {
+            return capacity;
+        }
+        else{
+            return Integer.MAX_VALUE;
+        }
     }
 
-    public boolean setEnrollmentLimit(int capacity){
-        //If students are enrolled you can't change the limit
-        if (studentList.size() == 0){
+
+    public void setEnrollmentLimit(int capacity){
+            enrollmentLimitExists = true;
             this.capacity = capacity;
-            return true;
-        }
-        return false;
     }
 
     public Set<Student> getStudents(){
@@ -61,7 +64,7 @@ public class Course {
             return true;
         }
         //if the course is full, add student to waitlist
-        if (studentList.size() >= capacity){
+        if (studentList.size() >= capacity && enrollmentLimitExists){
             if (waitlist.contains(student)){
                 return false;
             }
@@ -89,6 +92,15 @@ public class Course {
         else if (waitlist.contains(student)){
             waitlist.remove(student);
         }
+    }
+
+    public void removeEnrollmentLimit(){
+        enrollmentLimitExists = false;
+        capacity = Integer.MAX_VALUE;
+    }
+
+    public boolean getEnrollmentLimitExists(){
+        return enrollmentLimitExists;
     }
 
 }
