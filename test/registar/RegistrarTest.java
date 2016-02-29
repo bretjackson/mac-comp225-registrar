@@ -117,12 +117,13 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    NO LONGER NECESSARY WITH NEW REQUIREMENTS
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
@@ -164,6 +165,55 @@ public class RegistrarTest {
         assertTrue(comp225.getStudents().contains(zongo));
         assertEquals(list(fred), comp225.getWaitList());
     }
+
+    //enrollment is set to infinity by default
+    @Test
+    public void enrollmentDefaultIsInfinity() {
+        assertEquals(Integer.MAX_VALUE, math6.getEnrollmentLimit());
+    }
+
+    // can set enrollment limit when there are already students in class
+    @Test
+    public void setEnrollmentDuringRegistration() {
+        sally.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        comp225.setEnrollmentLimit(20);
+        assertEquals(20, comp225.getEnrollmentLimit());
+        assertEquals(2, comp225.getStudents().size());
+    }
+
+    // removeEnrollmentLimit works
+    @Test
+    public void canRemoveEnrollmentLimit() {
+        comp225.setEnrollmentLimit(16);
+        comp225.removeEnrollmentLimit();
+        assertEquals(Integer.MAX_VALUE, comp225.getEnrollmentLimit());
+    }
+
+    // setting enrollment higher when full class has waitlist enrolls students from waitlist
+    @Test
+    public void setEnrollmentLimitEnrollsWaitlist() {
+        comp225.setEnrollmentLimit(5);
+        factory.enrollMultipleStudents(comp225, 10);
+        assertEquals(5, comp225.getStudents().size());
+        assertEquals(5, comp225.getWaitList().size());
+        comp225.setEnrollmentLimit(7);
+        assertEquals(7, comp225.getStudents().size());
+        assertEquals(3, comp225.getWaitList().size());
+        comp225.removeEnrollmentLimit();
+        assertEquals(10, comp225.getStudents().size());
+        assertEquals(0, comp225.getWaitList().size());
+    }
+
+    // cannot set enrollment lower than current number of enrolled students
+    @Test
+    public void cannotSetLimitUnderEnrolledStudents() {
+        comp225.setEnrollmentLimit(16);
+        factory.enrollMultipleStudents(comp225, 18);
+        assertFalse(comp225.setEnrollmentLimit(10));
+        assertEquals(16, comp225.getStudents().size());
+    }
+
 
     // ------ Post-test invariant check ------
     //

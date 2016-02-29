@@ -1,7 +1,6 @@
 package registrar;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,13 +9,13 @@ import java.util.Set;
 public class Student {
 
     public String name;
-    public Set<Course> enrolledIn;
+    public Set<Course> courses;
 
     /**
      * Creates a new student with an empty set of classes they are enrolled in
      */
     public Student(){
-        enrolledIn = new HashSet<>();
+        courses = new HashSet<>();
     }
 
     public void setName(String name){
@@ -24,7 +23,7 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledIn;
+        return courses;
     }
 
     /**
@@ -33,8 +32,8 @@ public class Student {
      * @return true if worked, false if student could not be added (in which case student was put on wait list)
      */
     public boolean enrollIn(Course course){
-        if(course.enrollIn(this)) {
-            enrolledIn.add(course);
+        if(course.enrollStudent(this)) {
+            courses.add(course);
             return true;
         }
         return false;
@@ -45,8 +44,8 @@ public class Student {
      * @param course Course student is to be removed from
      */
     public void drop(Course course){
-        if (enrolledIn.contains(course)) {
-            enrolledIn.remove(course);
+        if (courses.contains(course)) {
+            courses.remove(course);
         }
         course.dropStudent(this);
     }

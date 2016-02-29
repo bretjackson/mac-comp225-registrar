@@ -17,12 +17,12 @@ public class Course {
     private int limit;
 
     /**
-     * Constructs a new Course object with default limit at 16
+     * Constructs a new Course object with default of no limit
      */
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
+        limit = Integer.MAX_VALUE;
     }
 
     public void setCatalogNumber(String number){
@@ -38,17 +38,25 @@ public class Course {
     }
 
     /**
-     * Sets enrollment limit of the class if there are no students enrolled yet
+     * Sets enrollment limit of the class (if new limit is still above current number of students enrolled)
      * @param limit new limit of class size
      * @return true if limit was reset, false if not reset
      */
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (limit > enrolledIn.size()) {
             this.limit = limit;
+            enrollFromWaitList();
             return true;
         }
         return false;
+    }
+
+    /**
+     *  Sets enrollment limit of class to infinity (by using MAX_VALUE, all other methods will still work
+     *  correctly when checking class sizes to add students, without need to write extra code)
+     */
+    public void removeEnrollmentLimit() {
+        setEnrollmentLimit(Integer.MAX_VALUE);
     }
 
     public Set<Student> getStudents(){
@@ -64,7 +72,7 @@ public class Course {
      * @param student
      * @return true if enrolled successfully, false if not enrolled and put onto waitlist
      */
-    public boolean enrollIn(Student student){
+    public boolean enrollStudent(Student student){
         //case where student is already in course
         if (enrolledIn.contains(student)){
             return true;
@@ -97,13 +105,14 @@ public class Course {
     }
 
     /**
-     * If there are students on the waitlist, enrolls the first student in the list
+     * If there are students on the waitlist, fills empty spots in the course with waitlisted students in order
+     * of waitlist
      */
     private void enrollFromWaitList() {
-        if (waitlist.size() > 0) {
+        while (limit > enrolledIn.size() && waitlist.size() > 0) {
             Student toEnroll = waitlist.remove(0);
             enrolledIn.add(toEnroll);
-            toEnroll.enrolledIn.add(this);
+            toEnroll.courses.add(this);
         }
     }
 
