@@ -13,16 +13,16 @@ import java.util.LinkedList;
 public class Course {
     private String catalogNumber;
     private String title;
-    private int enrollmentLimit;
+    private Integer enrollmentLimit;
 
     private Set<Student> enrolled;
     private List<Student> waitList;
 
     public Course(){
-        this(null, null, 16);
+        this(null, null, Integer.MAX_VALUE);
     }
 
-    public Course(String catalogNumber, String title, int enrollmentLimit) {
+    public Course(String catalogNumber, String title, Integer enrollmentLimit) {
         this.catalogNumber = catalogNumber;
         this.title = title;
         this.enrollmentLimit = enrollmentLimit;
@@ -46,17 +46,39 @@ public class Course {
         return title;
     }
 
-    public int getEnrollmentLimit(){
+    public Integer getEnrollmentLimit(){
         return this.enrollmentLimit;
     }
 
-    public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolled.isEmpty() && limit >= 0){
+    /* Changes enrollment limit and puts waitlisted student in any extra spots.
+     * @param New enrollment limit, a null value removes the limit
+     * @return Successful if there aren't more enrolled students than the new limit
+     */
+    public boolean setEnrollmentLimit(Integer limit){
+        //You can't set the limit below the number of currently enrolled students
+        if (limit >= this.enrolled.size()){
             this.enrollmentLimit = limit;
+            while (!this.waitList.isEmpty() && enrolled.size() < this.enrollmentLimit) {
+                this.enrollNextWaitListed();
+            }
             return true;
         }
-        return false;
+        else return false;
+    }
+
+    public boolean hasEnrollmentLimit() {
+        if (this.enrollmentLimit == Integer.MAX_VALUE) return false;
+        else return true;
+    }
+
+    /*
+     * Removes enrollment limit and enrolls any waitlisted students.
+     */
+    public void removeEnrollmentLimit() {
+        this.enrollmentLimit = Integer.MAX_VALUE;
+        while (!this.waitList.isEmpty()) {
+            this.enrollNextWaitListed();
+        }
     }
 
     public Set<Student> getStudents(){
@@ -78,6 +100,8 @@ public class Course {
      * @return true if student already enrolled or successfully enrolled, false if student added to wait list
      */
     public boolean enroll(Student student){
+        // the enrollment limit isn't reached or the student is already enrolled,enroll student
+        // if not already enrolled and return true
         if (enrolled.size() < enrollmentLimit || enrolled.contains(student)) {
             enrolled.add(student);
             return true;
@@ -98,13 +122,14 @@ public class Course {
     /*
      * Removes student from set of enrolled students or wait list if in either
      */
-    public void dropStudent(Student s){
-        if (enrolled.contains(s)) {
-            enrolled.remove(s);
+    public void dropStudent(Student student){
+        if (enrolled.contains(student)) {
+            enrolled.remove(student);
+            student.drop(this);
             enrollNextWaitListed();
         }
-        else if (waitList.contains(s)){
-            waitList.remove(s);
+        else if (waitList.contains(student)){
+            waitList.remove(student);
         }
     }
 

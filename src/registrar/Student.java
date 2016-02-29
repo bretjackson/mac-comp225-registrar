@@ -1,5 +1,6 @@
 package registrar;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class Student {
     }
 
     public Set<Course> getCourses(){
-        return enrolledCourses;
+        return Collections.unmodifiableSet(enrolledCourses);
     }
 
     /*
