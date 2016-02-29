@@ -37,6 +37,7 @@ public class Course {
     public Course(){
         enrolledIn = new HashSet<>();
         waitlist = new ArrayList<>();
+        limit = -1;
         //took out so that it just initializes to 0, why was it 16 before, that seems arbitrary you have to se
         //the limit now like you have to with courseID, and name
     }
@@ -72,11 +73,15 @@ public class Course {
      */
     public boolean setEnrollmentLimit(int limit){
         //If students are enrolled you can't change the limit
-        if (enrolledIn.size() < 1){ //changes to if the enrollment is less than 1, just to be safe
-            this.limit = limit;
-            return true;
+        if (limit <= enrolledIn.size()){ //Now it will let you change the limit if students are already enrolled, but not if the new limit is too low
+            return false;
         }
+        this.limit = limit;
         return false;
+    }
+
+    public void removeEnrollmentLimit(){
+        setEnrollmentLimit(-1);
     }
 
     /**
@@ -104,7 +109,7 @@ public class Course {
         if (enrolledIn.contains(aStudent)){
             return true;
         } else {
-            if (enrolledIn.size() >= limit){
+            if (enrolledIn.size() >= limit && !(limit < 0)){
                 if (waitlist.contains(aStudent)){
                     return false;
                 }
