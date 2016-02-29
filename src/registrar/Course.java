@@ -10,73 +10,96 @@ import java.util.Set;
  */
 public class Course {
 
-    private Set<Student> enrolledIn;
-    private List<Student> waitlist;
+    private Set<Student> enrolledStudents;//Renaming
+    private List<Student> waitlist;// Can change it to a queue
     private String number;
     private String name;
     private int limit;
 
     public Course(){
-        enrolledIn = new HashSet<>();
+        enrolledStudents = new HashSet<>();
         waitlist = new ArrayList<>();
-        limit = 16;
     }
+
 
     public void setCatalogNumber(String number){
         this.number = number;
     }
 
+    public void removeEnrollmentLimit(){
+        if (limit!=0){
+            limit = 1000;
+        }
+    }
+
+    // Makes the method name and the variable name match
     public void setTitle(String title){
+        //Title cannot be null
+        if (title==null){
+            throw new IllegalArgumentException("Course name cannot be null");
+        }
         this.name = title;
     }
+
+    public String getName(){return name;}
+
+    public void setNumber(String number){this.number = number;}
+
+    public String getNumber(){return number;}
 
     public int getEnrollmentLimit(){
         return limit;
     }
 
+    // Change limit at any time
+    // Cannot change limit to a number smaller than roster size.
     public boolean setEnrollmentLimit(int limit){
-        //If students are enrolled you can't change the limit
-        if (enrolledIn.size() == 0){
+        if (limit > enrolledStudents.size()){
             this.limit = limit;
             return true;
+        } else{
+            return false;
         }
-        return false;
     }
 
     public Set<Student> getStudents(){
-        return enrolledIn;
+        return enrolledStudents;
     }
 
     public List<Student> getWaitList(){
         return waitlist;
     }
 
-    public boolean enrollIn(Student s){
-        if (enrolledIn.contains(s)){
+    public boolean enroll(Student s){//                           enroll should not be public
+        if (enrolledStudents.contains(s)){
             return true;
         }
-        if (enrolledIn.size() >= limit){
-            if (waitlist.contains(s)){
-                return false;
+        if (enrolledStudents.size() >= limit){
+            if (!waitlist.contains(s)){
+                waitlist.add(s);
+                // Print system message to notify that you are enrolled in, or the class is full already
             }
-            waitlist.add(s);
             return false;
         }
-        enrolledIn.add(s);
+        enrolledStudents.add(s);
         return true;
     }
 
     public void dropStudent(Student s){
-        if (enrolledIn.contains(s)) {
-            enrolledIn.remove(s);
-            if (waitlist.size() > 0) {
-                Student toEnroll = waitlist.remove(0);
-                enrolledIn.add(toEnroll);
-                toEnroll.enrolledIn.add(this);
+        if (enrolledStudents.remove(s)) {
+            if (!waitlist.isEmpty()) {
+               enrollNextFromWaitlist();
             }
         }
-        else if (waitlist.contains(s)){
-            waitlist.remove(s);
+        waitlist.remove(s); //safe to remove even the student is absent in waitlist
+
+    }
+
+    private void enrollNextFromWaitlist(){
+        if (!waitlist.isEmpty()){
+            Student studentFromWaitlist = waitlist.remove(0);
+            enrolledStudents.add(studentFromWaitlist);
+            studentFromWaitlist.enrollIn(this); // Better way to add a new course to the student's list
         }
     }
 

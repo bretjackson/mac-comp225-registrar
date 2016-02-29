@@ -40,6 +40,33 @@ public class RegistrarTest {
         basketWeaving101 = factory.makeCourse("Underwater Basket Weaving 101", "Senior spring semester!");
     }
 
+    // ------ Changing limit ------
+    @Test
+    public void changeLimitBeforeReg(){
+        math6.setEnrollmentLimit(1);
+        assertEquals(1, math6.getEnrollmentLimit());
+        comp225.setEnrollmentLimit(2);
+        assertEquals(2, comp225.getEnrollmentLimit());
+    }
+
+    @Test
+    public void limitCannotBeToSmall(){
+        comp225.enroll(sally);
+        comp225.enroll(fred);
+        assertFalse(comp225.setEnrollmentLimit(1));
+    }
+
+    @Test
+    public void removeLimitTest(){
+        math6.setEnrollmentLimit(2);
+        math6.enroll(sally);
+        math6.enroll(fred);
+        assertFalse(math6.enroll(zongo));
+        math6.removeEnrollmentLimit();
+        assertTrue(math6.enroll(zongo));
+    }
+
+
     // ------ Enrolling ------
 
     @Test
@@ -117,12 +144,12 @@ public class RegistrarTest {
         assertEquals(list(sally, fred, zongo), comp225.getWaitList());
     }
 
-    @Test
-    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
-        assertTrue(basketWeaving101.setEnrollmentLimit(10));
-        fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
-    }
+//    @Test
+//    public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
+//        assertTrue(basketWeaving101.setEnrollmentLimit(10));
+//        fred.enrollIn(basketWeaving101);
+//        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+//    }
 
     // ------ Drop courses ------
 
