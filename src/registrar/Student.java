@@ -26,11 +26,8 @@ public class Student {
     }
 
     public boolean enrollIn(Course course) {
-        //if course is full, student cannot enroll
-        if (course.getStudents().size() > course.getEnrollmentLimit()){
-            return false;
-        }
-        else {
+
+      if(course.getEnrollmentLimit() >= course.getStudents().size()){
             //if student is enrolled or can successfully enroll, student can add course to his list of courses
             if (course.enrollIn(this)) {
                 enrolledIn.add(course);
@@ -38,7 +35,11 @@ public class Student {
             } else {
                 return false;
           }
-        }
+      }
+      else{
+          return false;
+      }
+
     }
 
 
