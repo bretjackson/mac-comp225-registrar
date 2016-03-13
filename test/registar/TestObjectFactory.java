@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * Created by paul on 2015/4/17.
+ *
+ * No changes made by Tyler J. Skluzacek.
  */
 public class TestObjectFactory {
     private List<Student> students = new LinkedList<Student>();
@@ -21,6 +23,8 @@ public class TestObjectFactory {
         students.add(s);
         return s;
     }
+
+
 
     public Course makeCourse(String catalogNumber, String title) {
         Course c = new Course();
