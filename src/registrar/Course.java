@@ -21,7 +21,7 @@ public class Course {
         waitlist = new ArrayList<>();
         limit = 16;
     }
-
+//a
     public void setCatalogNumber(String number){
         this.number = number;
     }
