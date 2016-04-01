@@ -1,17 +1,13 @@
 package registar;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import registrar.Course;
 import registrar.Student;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -52,6 +48,17 @@ public class RegistrarTest {
         sally.enrollIn(comp225);
         assertEquals(set(comp225), sally.getCourses());
         assertEquals(set(sally), comp225.getStudents());
+    }
+
+    @Test
+    public void enrollIsUnlimited(){
+        comp225.setEnrollmentLimit(3);
+        sally.enrollIn(comp225);
+        fred.enrollIn(comp225);
+        zongo.enrollIn(comp225);
+        assertTrue(comp225.isFull());
+        comp225.removeEnrollmentLimit();
+        assertFalse(comp225.isFull());
     }
 
     @Test
@@ -121,7 +128,7 @@ public class RegistrarTest {
     public void cannotChangeEnrollmentLimitOnceStudentsRegister(){
         assertTrue(basketWeaving101.setEnrollmentLimit(10));
         fred.enrollIn(basketWeaving101);
-        assertFalse(basketWeaving101.setEnrollmentLimit(8));
+        assertTrue(basketWeaving101.setEnrollmentLimit(8));
     }
 
 
